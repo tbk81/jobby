@@ -1,6 +1,7 @@
 import os
 import requests
 from selenium import webdriver
+from bs4 import BeautifulSoup
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.common.by import By
@@ -8,14 +9,16 @@ from selenium.webdriver.common.by import By
 job_url = "https://recruiting.paylocity.com/Recruiting/Jobs/All/d1d20c2d-0e1d-4869-820d-a5b454cfba0b/ANAPTYSBIO-INC"
 
 # Chrome and driver setup
-chrome_options = webdriver.ChromeOptions()
-chrome_options.add_experimental_option("detach", True)
+def chrome_driver():
+    chrome_options = webdriver.ChromeOptions()
+    chrome_options.add_experimental_option("detach", True)
 
-user_data_dir = os.path.join(os.getcwd(), "chrome_profile")
-chrome_options.add_argument(f"--user-data-dir={user_data_dir}")
+    user_data_dir = os.path.join(os.getcwd(), "chrome_profile")
+    chrome_options.add_argument(f"--user-data-dir={user_data_dir}")
 
-driver = webdriver.Chrome(options=chrome_options)
-driver.get(endpoint)
+    driver = webdriver.Chrome(options=chrome_options)
+    # driver.get(endpoint)
+    driver.get(job_url)
 
 
 
