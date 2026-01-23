@@ -1,6 +1,7 @@
 import os
 # import json
-import csv
+# import csv
+import pandas as pd
 import requests
 from selenium import webdriver
 from bs4 import BeautifulSoup
@@ -30,13 +31,13 @@ def write_site(site):
         file.write(job_response.text)
 
 
+
+def title_parser():
+    with open('html_data/website.html') as f:
+        data = f.read()
+    soup = BeautifulSoup(data, 'html.parser')
+    job_titles = soup.find_all('div')  #, class_='job-listing-container')
+    print(job_titles)
+
 # write_site(job_url)
-
-
-# with open('html_data/website.html') as f:
-#     data = f.read()
-# soup = BeautifulSoup(data, 'html.parser')
-# job_titles = soup.find_all('div')  #, class_='job-listing-container')
-# print(job_titles)
-
 
