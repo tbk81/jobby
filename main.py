@@ -42,8 +42,8 @@ def title_parser():
 
 def company_writer(company):
     with open('companies.csv', 'a', newline='') as f:
+        f.write('\n')
         writer_obj = writer(f)
-        writer_obj.writerow('\n')
         writer_obj.writerow(company)
 
 
