@@ -1,5 +1,6 @@
 import os
-import json
+# import json
+import csv
 import requests
 from selenium import webdriver
 from bs4 import BeautifulSoup
@@ -8,9 +9,7 @@ from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.common.by import By
 
 job_url = "https://recruiting.paylocity.com/Recruiting/Jobs/All/d1d20c2d-0e1d-4869-820d-a5b454cfba0b/ANAPTYSBIO-INC"
-new_job = {"Anaptys": job_url}
-with open("companies.json", mode="w", encoding="utf-8") as write_file:
-    json.dump(new_job, write_file)
+
 
 # Chrome and driver setup
 def chrome_driver(url):
