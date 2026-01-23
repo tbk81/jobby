@@ -1,7 +1,7 @@
 import os
 # import json
-# import csv
-import pandas as pd
+from csv import writer
+# import pandas as pd
 import requests
 from selenium import webdriver
 from bs4 import BeautifulSoup
@@ -9,7 +9,6 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.common.by import By
 
-job_url = "https://recruiting.paylocity.com/Recruiting/Jobs/All/d1d20c2d-0e1d-4869-820d-a5b454cfba0b/ANAPTYSBIO-INC"
 
 
 # Chrome and driver setup
@@ -40,4 +39,15 @@ def title_parser():
     print(job_titles)
 
 # write_site(job_url)
+
+def company_writer(company):
+    with open('companies.csv', 'a', newline='') as f:
+        writer_obj = writer(f)
+        writer_obj.writerow('\n')
+        writer_obj.writerow(company)
+
+
+
+new_company = ["Anyptys Bio", "https://recruiting.paylocity.com/Recruiting/Jobs/All/d1d20c2d-0e1d-4869-820d-a5b454cfba0b/ANAPTYSBIO-INC"]
+company_writer(new_company)
 
