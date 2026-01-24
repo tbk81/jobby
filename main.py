@@ -37,7 +37,7 @@ def url_grabber(company_name):
 
 
 
-# Pulls a sits html data to test parsing
+# Pulls a sits html data to test parsing; this does not work for dynamic sites
 def write_site(site):
     job_response = requests.get(site)
     with open('html_data/website.html', 'w') as file:
