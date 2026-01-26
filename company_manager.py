@@ -13,7 +13,7 @@ def url_grabber(company_name):
         return company_url
 
 # Adds a new company/url to the csv file
-def company_writer(company):
+def add_company(company):
     with open('companies.csv', 'a', newline='') as f:
         f.write('\n')
         writer_obj = writer(f)
