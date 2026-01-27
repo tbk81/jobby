@@ -18,7 +18,7 @@ def chrome_driver(url):
     driver = webdriver.Chrome(options=chrome_options)
     driver.get(url)
 
-# Pulls a sits html data to test parsing; this does not work for dynamic sites
+# Pulls site HTML data to test parsing; this does not work for dynamic sites
 def write_site(site):
     job_response = requests.get(site)
     with open('html_data/website.html', 'w') as file:
