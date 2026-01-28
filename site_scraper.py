@@ -1,7 +1,6 @@
 import os
 import requests
 from selenium import webdriver
-from bs4 import BeautifulSoup
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.common.by import By
@@ -28,13 +27,4 @@ def write_site(site, name):
     job_response = requests.get(site, headers=headers)
     with open(f'html_data/{name}.html', 'w') as file:
         file.write(job_response.text)
-
-
-# for testing how to parse the job titles and descriptions
-def title_parser():
-    with open('html_data/website.html') as f:
-        data = f.read()
-    soup = BeautifulSoup(data, 'html.parser')
-    job_titles = soup.find_all('div')  #, class_='job-listing-container')
-    print(job_titles)
 
