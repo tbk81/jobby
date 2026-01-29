@@ -8,5 +8,5 @@ from site_scraper import write_site
 # print(mira)
 
 # site_data = write_site(url_grabber("Erasca"), "erasca")
-site_data = write_site(url_grabber("Janux"), "Janux")
+# site_data = write_site(url_grabber("Janux"), "Janux")
 
