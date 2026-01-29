@@ -9,4 +9,6 @@ from site_scraper import write_site
 
 # site_data = write_site(url_grabber("Erasca"), "erasca")
 # site_data = write_site(url_grabber("Janux"), "Janux")
+# site_data = write_site(url_grabber("Mirador"), "mirador")
+site_data = write_site(url_grabber("Empirico"), "empirico")
 
