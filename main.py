@@ -1,5 +1,5 @@
 from company_manager import *
-from site_scraper import write_site
+from site_scraper import write_site, chrome_driver
 
 # new_company = ["Erasca", "https://www.erasca.com/open-positions/"]
 
@@ -10,5 +10,6 @@ from site_scraper import write_site
 # site_data = write_site(url_grabber("Erasca"), "erasca")
 # site_data = write_site(url_grabber("Janux"), "Janux")
 # site_data = write_site(url_grabber("Mirador"), "mirador")
-site_data = write_site(url_grabber("Empirico"), "empirico")
+# site_data = write_site(url_grabber("Empirico"), "empirico")
+site_data = chrome_driver(url_grabber("AnaptysBio"), "anaptysbio")
 
