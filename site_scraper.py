@@ -12,7 +12,7 @@ headers = {
     }
 
 # Chrome and driver setup for selenium
-def chrome_driver(url, name):
+def sel_driver(url, name):
     chrome_options = webdriver.ChromeOptions()
     chrome_options.add_experimental_option("detach", True)
 
