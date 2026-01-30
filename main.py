@@ -9,7 +9,7 @@ from site_scraper import write_site, sel_driver
 
 # site_data = write_site(url_grabber("Erasca"), "erasca")
 # site_data = write_site(url_grabber("Janux"), "Janux")
-# site_data = write_site(url_grabber("Mirador"), "mirador")
 # site_data = write_site(url_grabber("Empirico"), "empirico")
 # site_data = sel_driver(url_grabber("AnaptysBio"), "anaptysbio")
+site_data = sel_driver(url_grabber("Mirador"), "mirador")
 

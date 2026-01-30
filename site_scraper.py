@@ -15,6 +15,7 @@ headers = {
 def sel_driver(url, name):
     chrome_options = webdriver.ChromeOptions()
     chrome_options.add_experimental_option("detach", True)
+    chrome_options.add_argument('--headless')
 
     user_data_dir = os.path.join(os.getcwd(), "chrome_profile")
     chrome_options.add_argument(f"--user-data-dir={user_data_dir}")
@@ -24,6 +25,7 @@ def sel_driver(url, name):
     driver.implicitly_wait(5)
     with open(f'html_data/{name}.html', 'w') as file:
         file.write(driver.page_source)
+    driver.close()
 
 # Pulls site HTML data to test parsing; this does not work for dynamic sites
 def write_site(url, name):
