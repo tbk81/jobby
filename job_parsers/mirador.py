@@ -1,7 +1,7 @@
 from bs4 import BeautifulSoup
 
-with open('/Users/trevor/jobby/html_data/mirador.html') as file:
-# with open('/home/trevor/python-projects/jobby/html_data/janux.html') as file:
+# with open('/Users/trevor/jobby/html_data/mirador.html') as file:
+with open('/home/trevor/python-projects/jobby/html_data/janux.html') as file:
     mirador_data = file.read()
 soup = BeautifulSoup(mirador_data, 'html.parser')
 

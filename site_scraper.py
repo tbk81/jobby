@@ -32,3 +32,19 @@ def write_site(url, name):
     job_response = requests.get(url, headers=headers)
     with open(f'html_data/{name}.html', 'w') as file:
         file.write(job_response.text)
+
+
+url = 'https://www.miradortx.com/careers?gh_tag=all_jobs#all_jobs'
+chrome_options = webdriver.ChromeOptions()
+chrome_options.add_experimental_option("detach", True)
+chrome_options.add_argument('--headless')
+
+user_data_dir = os.path.join(os.getcwd(), "chrome_profile")
+chrome_options.add_argument(f"--user-data-dir={user_data_dir}")
+
+driver = webdriver.Chrome(options=chrome_options)
+driver.get(url)
+driver.implicitly_wait(5)
+job_titles = driver.find_element(By.CSS_SELECTOR, 'p.body.body--medium')
+driver.quit()
+print(job_titles)
