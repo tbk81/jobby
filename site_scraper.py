@@ -1,6 +1,7 @@
 import os
 import requests
 from selenium import webdriver
+import time
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.common.by import By
@@ -37,14 +38,23 @@ def write_site(url, name):
 url = 'https://www.miradortx.com/careers?gh_tag=all_jobs#all_jobs'
 chrome_options = webdriver.ChromeOptions()
 chrome_options.add_experimental_option("detach", True)
-chrome_options.add_argument('--headless')
+# chrome_options.add_argument('--headless')
 
 user_data_dir = os.path.join(os.getcwd(), "chrome_profile")
 chrome_options.add_argument(f"--user-data-dir={user_data_dir}")
 
 driver = webdriver.Chrome(options=chrome_options)
 driver.get(url)
-driver.implicitly_wait(5)
-job_titles = driver.find_element(By.CSS_SELECTOR, 'p.body.body--medium')
+driver.implicitly_wait(2)
+# html = driver.find_element(By.CLASS_NAME, "job-posts")
+# html = driver.find_element(By.CSS_SELECTOR, "div.job-posts")
+# html = driver.find_element(By.CSS_SELECTOR, "p.body.body--medium")
+# html = driver.find_element(By.XPATH, "//p[@class='body body--medium']")
+# html = driver.find_element(By.XPATH, "//p[contains(@class, 'body--medium')]")
+# html = driver.find_element(By.XPATH, "/html/body/main/div/div[2]/div[2]/div/div[1]/div/table/tbody/tr/td/a/p[1]")
+# innerHTML = driver.execute_script("return document.body.innerHTML")
+print(html.text)
+
+# job_titles = driver.find_element(By.CSS_SELECTOR, 'p.body.body--medium')
 driver.quit()
-print(job_titles)
+# print(job_titles)
