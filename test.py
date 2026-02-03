@@ -29,25 +29,23 @@ html = site_driver.page_source
 #         print(job_titles[i].text)
 #         # print(job_urls[i].text)
 site_driver.quit()
-print(html)
-
-# job_titles = driver.find_element(By.CSS_SELECTOR, 'p.body.body--medium')
-# driver.quit()
-# print(job_titles)
+with open(f'html_data/mirador.html', 'w') as file:
+    file.write(html)
+# print(html)
 
 
 
-# with open('/Users/trevor/jobby/html_data/mirador.html') as file:
-# with open('/home/trevor/python-projects/jobby/html_data/janux.html') as file:
-#     mirador_data = file.read()
-# soup = BeautifulSoup(mirador_data, 'html.parser')
-#
-# job_titles = soup.find_all('h5')
+with open('/Users/trevor/jobby/html_data/mirador.html') as file:
+# with open('/home/trevor/python-projects/jobby/html_data/mirador.html') as file:
+    mirador_data = file.read()
+soup = BeautifulSoup(mirador_data, 'html.parser')
+
+job_titles = soup.find_all('p', class_='body.body--medium')
 # job_locations = soup.find_all('span', class_='sort-by-location posting-category small-category-label location')
 # job_urls = soup.find_all('a', class_='posting-btn-submit template-btn-submit cerulean')
 
-# for i in range(len(job_titles)):
-#     print(job_titles[i].text.strip())
-#     print(job_locations[i].get_text(strip=True))
-#     print(job_urls[i]['href'].strip())
-#     print("\n")
+for i in range(len(job_titles))[1:]:
+    print(job_titles[i].text)
+    # print(job_locations[i].get_text(strip=True))
+    # print(job_urls[i]['href'].strip())
+    # print("\n")
