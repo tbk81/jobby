@@ -2,7 +2,7 @@ from csv import writer, reader
 
 # Returns companies url from the csv file for parsing
 def url_grabber(company_name):
-    with open('companies.csv', newline='') as csv_file:
+    with open('/Users/trevor/jobby/companies.csv', newline='') as csv_file:
         csv_reader = reader(csv_file, delimiter=',')
         for row in csv_reader:
             if row[0] == company_name:
