@@ -21,13 +21,13 @@ try:
     site_driver.switch_to.frame(frame)
     # driver.
     job_titles = site_driver.find_elements(By.XPATH, "//p[@class='body body--medium']")
-    job_urls = site_driver.find_elements(By.TAG_NAME, "a")
+    # job_urls = site_driver.find_elements(By.TAG_NAME, "a")
 except NoSuchElementException:
     print("element not found")
 else:
-    for i in range(len(job_titles)):
+    for i in range(len(job_titles))[1:]:
         print(job_titles[i].text)
-        print(job_urls[i].text)
+        # print(job_urls[i].text)
 site_driver.quit()
 
 
