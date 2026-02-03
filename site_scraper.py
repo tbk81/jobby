@@ -45,7 +45,7 @@ chrome_options.add_argument(f"--user-data-dir={user_data_dir}")
 
 driver = webdriver.Chrome(options=chrome_options)
 driver.get(url)
-driver.implicitly_wait(10)
+driver.implicitly_wait(3)
 try:
     button = driver.find_element(By.ID, "CybotCookiebotDialogBodyLevelButtonLevelOptinAllowAll")
 except NoSuchElementException:
@@ -54,13 +54,14 @@ else:
     button.click()
 try:
     # html = driver.find_element(By.CSS_SELECTOR, "p.body.body--medium")
-    # html = driver.find_element(By.CLASS_NAME, "job-posts")
+    frame = driver.find_element(By.CLASS_NAME, "job-posts--table")
+    driver.switch_to.frame(frame)
     # html = driver.find_elements(By.CLASS_NAME, "p")
     # html = driver.find_elements(By.TAG_NAME, "tr")
     # html = driver.find_element(By.CSS_SELECTOR, "div.job-posts")
     # html = driver.find_element(By.CSS_SELECTOR, "p.body.body--medium")
-    html = driver.find_elements(By.XPATH, "//p[@class='body body--medium']")
-    # html = driver.find_element(By.XPATH, "//p[contains(@class, 'body--medium')]")
+    # html = driver.find_elements(By.XPATH, "//p[@class='body body--medium']")
+    html = driver.find_element(By.XPATH, "//p[contains(@class, 'body--medium')]")
     # html = driver.find_element(By.XPATH, "/html/body/main/div/div[2]/div[2]/div/div[1]/div/table/tbody/tr/td/a/p[1]")
     # innerHTML = driver.execute_script("return document.body.innerHTML")
 except NoSuchElementException:
