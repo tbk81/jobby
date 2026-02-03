@@ -53,23 +53,17 @@ except NoSuchElementException:
 else:
     button.click()
 try:
-    # html = driver.find_element(By.CSS_SELECTOR, "p.body.body--medium")
-    frame = driver.find_element(By.CLASS_NAME, "job-posts--table")
+    frame = driver.find_element(By.ID, "grnhse_iframe")
     driver.switch_to.frame(frame)
-    # html = driver.find_elements(By.CLASS_NAME, "p")
-    # html = driver.find_elements(By.TAG_NAME, "tr")
-    # html = driver.find_element(By.CSS_SELECTOR, "div.job-posts")
-    # html = driver.find_element(By.CSS_SELECTOR, "p.body.body--medium")
-    # html = driver.find_elements(By.XPATH, "//p[@class='body body--medium']")
-    html = driver.find_element(By.XPATH, "//p[contains(@class, 'body--medium')]")
-    # html = driver.find_element(By.XPATH, "/html/body/main/div/div[2]/div[2]/div/div[1]/div/table/tbody/tr/td/a/p[1]")
-    # innerHTML = driver.execute_script("return document.body.innerHTML")
+    driver.
+    job_titles = driver.find_elements(By.XPATH, "//p[@class='body body--medium']")
+    job_urls = driver.find_elements(By.TAG_NAME, "a")
 except NoSuchElementException:
     print("element not found")
 else:
-    print(html)
-# for p in html:
-#     print(p.text)
+    for i in range(len(job_titles)):
+        print(job_titles[i].text)
+        # print(job_urls[i]['href'].strip())
 
 # job_titles = driver.find_element(By.CSS_SELECTOR, 'p.body.body--medium')
 # driver.quit()
