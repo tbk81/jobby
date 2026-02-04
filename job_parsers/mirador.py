@@ -6,7 +6,7 @@ from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.by import By
 
 site_driver = sel_driver(url_grabber("Mirador"))
-path_to_html = html_data_path('mirador')
+# path_to_html = html_data_path('mirador')
 
 try:
     button = site_driver.find_element(By.ID, "CybotCookiebotDialogBodyLevelButtonLevelOptinAllowAll")
@@ -24,11 +24,11 @@ try:
 except NoSuchElementException:
     print("element not found")
 else:
-    with open(path_to_html, 'w') as file:
+    with open('html_data/mirador.html', 'w') as file:
         file.write(html)
 site_driver.quit()
 
-with open(path_to_html) as file:
+with open('html_data/mirador.html') as file:
     mirador_data = file.read()
 soup = BeautifulSoup(mirador_data, 'html.parser')
 #
