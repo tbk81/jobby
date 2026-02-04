@@ -1,18 +1,11 @@
-import os
+from path_finder import companies_path
 from csv import writer, reader
 
-LINUX = "posix"
-MACOS = "darwin"
-LINUX_PATH = "/home/trevor/python-projects/jobby/companies.csv"
-MACOS_PATH = "/Users/trevor/jobby/companies.csv"
+path_to_companies = companies_path()
 
 # Returns companies url from the csv file for parsing
 def url_grabber(company_name):
-    if os.path.exists(LINUX_PATH):
-        csv_path = LINUX_PATH
-    else:
-        csv_path = MACOS_PATH
-    with open(f'{csv_path}', newline='') as csv_file:
+    with open(path_to_companies, newline='') as csv_file:
         csv_reader = reader(csv_file, delimiter=',')
         for row in csv_reader:
             if row[0] == company_name:
@@ -24,7 +17,7 @@ def url_grabber(company_name):
 
 # Adds a new company/url to the csv file
 def add_company(company):
-    with open('companies.csv', 'a', newline='') as f:
+    with open(path_to_companies, 'a', newline='') as f:
         f.write('\n')
         writer_obj = writer(f)
         writer_obj.writerow(company)

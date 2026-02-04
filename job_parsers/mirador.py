@@ -1,3 +1,4 @@
+from path_finder import html_data_path
 from site_scraper import sel_driver
 from company_manager import *
 from bs4 import BeautifulSoup
@@ -5,6 +6,7 @@ from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.by import By
 
 site_driver = sel_driver(url_grabber("Mirador"))
+path_to_html = html_data_path('mirador')
 
 try:
     button = site_driver.find_element(By.ID, "CybotCookiebotDialogBodyLevelButtonLevelOptinAllowAll")
@@ -22,12 +24,11 @@ try:
 except NoSuchElementException:
     print("element not found")
 else:
-    with open(f'/home/trevor/python-projects/jobby/html_data/mirador.html', 'w') as file:
+    with open(path_to_html, 'w') as file:
         file.write(html)
 site_driver.quit()
 
-# with open('/Users/trevor/jobby/html_data/mirador.html') as file:
-with open('/home/trevor/python-projects/jobby/html_data/mirador.html') as file:
+with open(path_to_html) as file:
     mirador_data = file.read()
 soup = BeautifulSoup(mirador_data, 'html.parser')
 #
