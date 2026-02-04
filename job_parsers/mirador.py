@@ -22,12 +22,12 @@ try:
 except NoSuchElementException:
     print("element not found")
 else:
-    with open(f'/Users/trevor/jobby/html_data/mirador.html', 'w') as file:
+    with open(f'/home/trevor/python-projects/jobby/html_data/mirador.html', 'w') as file:
         file.write(html)
 site_driver.quit()
 
-with open('/Users/trevor/jobby/html_data/mirador.html') as file:
-    # with open('/home/trevor/python-projects/jobby/html_data/mirador.html') as file:
+# with open('/Users/trevor/jobby/html_data/mirador.html') as file:
+with open('/home/trevor/python-projects/jobby/html_data/mirador.html') as file:
     mirador_data = file.read()
 soup = BeautifulSoup(mirador_data, 'html.parser')
 #
