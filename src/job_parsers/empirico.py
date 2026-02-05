@@ -1,7 +1,6 @@
 from bs4 import BeautifulSoup
 
-with open('/Users/trevor/jobby/html_data/empirico.html') as file:
-# with open('/home/trevor/python-projects/jobby/html_data/janux.html') as file:
+with open('html_data/empirico.html') as file:
     empirico_data = file.read()
 soup = BeautifulSoup(empirico_data, 'html.parser')
 

@@ -1,7 +1,7 @@
 from bs4 import BeautifulSoup
 
 # with open('/Users/trevor/jobby/html_data/anaptysbio.html') as file:
-with open('/home/trevor/python-projects/jobby/html_data/anaptysbio.html') as file:
+with open('/src/html_data/anaptysbio.html') as file:
     anaptys_data = file.read()
 soup = BeautifulSoup(anaptys_data, 'html.parser')
 
