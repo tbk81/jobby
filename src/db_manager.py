@@ -1,20 +1,11 @@
 # import sqlite3
-from Cython.Shadow import nonecheck
+import os
 from sqlalchemy import Integer, String, Date, create_engine, select
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, Session
 from sqlalchemy.sql import func
 from sqlalchemy.exc import IntegrityError
 from datetime import date
 
-# companies_db_cursor.execute("CREATE TABLE companies (id INTEGER PRIMARY KEY, company varchar(250) "
-#                             "NOT NULL UNIQUE, url varchar(250) NOT NULL, date )")
-
-# companies_db = sqlite3.connect('databases/companies.db')
-# companies_db_cursor = companies_db.cursor()
-# new_column = "ALTER TABLE companies ADD COLUMN date_added TIMESTAMP"
-# companies_db_cursor.execute(new_column)
-# delete_column = "ALTER TABLE companies DROP COLUMN addDate"
-# companies_db_cursor.execute(delete_column)
 
 class Base(DeclarativeBase):
     pass
@@ -28,9 +19,13 @@ class Company(Base):
 
 
 # Connect the database
-engine = create_engine("sqlite:///databases/companies.db")
+# BASE_DIR = os.path.dirname(os.path.abspath(__file__))  # Get the directory where THIS file (db_manager.py) is located
+# DB_PATH = os.path.join(BASE_DIR, "databases", "companies.db") # Construct the absolute path to the database file
+# engine = create_engine(f"sqlite:///{DB_PATH}")  # Create the engine using the absolute path
+# print(f"Connecting to database at: {DB_PATH}")
+engine = create_engine(f"sqlite:///src/databases/companies.db")  # Create the engine using the absolute path
+print("Connecting to database at: companies.db")
 Base.metadata.create_all(engine)
-# print("Table 'companies' created successfully.")
 
 
 def list_companies():
