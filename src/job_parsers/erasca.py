@@ -1,7 +1,6 @@
 from bs4 import BeautifulSoup
 
-# with open('/Users/trevor/jobby/html_data/erasca.html') as file:
-with open('/src/html_data/erasca.html') as file:
+with open('src/html_data/erasca.html') as file:
     erasca_data = file.read()
 soup = BeautifulSoup(erasca_data, 'html.parser')
 

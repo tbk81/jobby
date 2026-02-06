@@ -1,5 +1,5 @@
 # import sqlite3
-import os
+# import os
 from sqlalchemy import Integer, String, Date, create_engine, select
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, Session
 from sqlalchemy.sql import func
@@ -20,6 +20,7 @@ class Company(Base):
 class Job(Base):
     __tablename__ = "jobs"
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    company: Mapped[str] = mapped_column(String(250), nullable=False)
     title: Mapped[str] = mapped_column(String(250), unique=True, nullable=False)
     location: Mapped[str] = mapped_column(String(250), nullable=False)
     url: Mapped[str] = mapped_column(String(250), nullable=False)
@@ -103,11 +104,12 @@ def list_job_titles():
         jobs = session.scalars(select(Job)).all()
         print(f"\nCurrent job title: {[j.title for j in jobs]}")
 
-def add_job(title, location, url):
+def add_job(company, title, location, url):
     """
         Adds a new job posting to the jobs database.
 
         Args:
+            company (str): Company name.
             title (str): Job title.
             location (str): Location of the job posting.
             url (str): Job posting url.
@@ -115,6 +117,7 @@ def add_job(title, location, url):
     with Session(job_engine) as session:
         try:
             new_job = Job(
+                company=company,
                 title=title,
                 location=location,
                 url=url
@@ -122,11 +125,11 @@ def add_job(title, location, url):
             session.add(new_job)
             session.commit()
             print(f"Success: Added '{title}' to the jobs database.")
-            return new_company
+            return new_job
         except IntegrityError:
-            # This block runs if the name already exists (unique constraint violation)
+            # This block runs if the job title already exists (unique constraint violation)
             session.rollback()  # Cancel the pending transaction
-            print(f"Error: The job '{name}' already exists.")
+            print(f"Error: The job '{title}' already exists.")
             return None
         except Exception as e:
             # Catch any other unexpected errors
