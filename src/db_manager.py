@@ -1,5 +1,3 @@
-# import sqlite3
-# import os
 from sqlalchemy import Integer, String, Date, create_engine, select
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, Session
 from sqlalchemy.sql import func
