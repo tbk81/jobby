@@ -27,17 +27,11 @@ class Job(Base):
     date_added: Mapped[date] = mapped_column(Date, default=func.current_date())
 
 
-# Connect the database
-# BASE_DIR = os.path.dirname(os.path.abspath(__file__))  # Get the directory where THIS file (db_manager.py) is located
-# DB_PATH = os.path.join(BASE_DIR, "databases", "companies.db") # Construct the absolute path to the database file
-# engine = create_engine(f"sqlite:///{DB_PATH}")  # Create the engine using the absolute path
-# print(f"Connecting to database at: {DB_PATH}")
+# Connect the databases
 company_engine = create_engine(f"sqlite:///src/databases/companies.db")  # Create the engine using the absolute path
-# print("Connecting to database at: companies.db")
 Base.metadata.create_all(company_engine)
 
 job_engine = create_engine(f"sqlite:///src/databases/jobs.db")
-# print("Connecting to database at: jobs.db")
 Base.metadata.create_all(job_engine)
 
 
