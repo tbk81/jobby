@@ -1,7 +1,7 @@
 from bs4 import BeautifulSoup
+from src.db_manager import add_job
 
-with open('/Users/trevor/jobby/html_data/janux.html') as file:
-# with open('/home/trevor/python-projects/jobby/html_data/janux.html') as file:
+with open('src/html_data/janux.html') as file:
     janux_data = file.read()
 soup = BeautifulSoup(janux_data, 'html.parser')
 

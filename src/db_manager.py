@@ -128,3 +128,16 @@ def add_job(company, title, location, url):
             session.rollback()
             print(f"An unexpected error occurred: {e}")
             return None
+
+def remove_job(title):
+    with Session(job_engine) as session:
+        # Find the job title, scalar_one_or_none() returns the object if found, or None if not
+        stmt = select(Job).where(Job.title == title)
+        title_to_delete = session.execute(stmt).scalar_one_or_none()
+        # Check and Delete
+        if title_to_delete:
+            session.delete(title_to_delete)
+            session.commit()
+            print(f"Success: Deleted '{title}' from the company database.")
+        else:
+            print(f"Warning: Could not delete '{title}' because it does not exist.")
