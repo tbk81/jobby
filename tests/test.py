@@ -1,12 +1,12 @@
 import csv
 from src.db_manager import *
 
-# add_company("Erasca", "https://www.erasca.com/open-positions/")
+add_company("Erasca", "https://www.erasca.com/open-positions/")
 # remove_company("Erasca")
-# list_companies()
+list_companies()
 
-add_job("Erasca", "VP Global Pharmacovigilance", "San Diego, CA or remote",
-        "https://www.erasca.com/jobs/vp-global-pharmacovigilance/")
+# add_job("Erasca", "VP Global Pharmacovigilance", "San Diego, CA or remote",
+#         "https://www.erasca.com/jobs/vp-global-pharmacovigilance/")
 
 
 # Used to populate the db from a csv file
@@ -19,4 +19,4 @@ add_job("Erasca", "VP Global Pharmacovigilance", "San Diego, CA or remote",
 #     print(row)
 
 # remove_job("VP Global Pharmacovigilance")
-list_job_titles()
+# list_job_titles()

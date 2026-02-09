@@ -54,29 +54,26 @@ def add_company(name, url):
     #     session.commit()
     #     print(f"Success: Added '{name}'")
 
-    with Session(job_engine) as session:
-        # Checks if specific job at this company exists
-        stmt = select(Job).where(
-            Job.company == company,
-            Job.title == title
+    with Session(company_engine) as session:
+        # Checks if specific company exists
+        stmt = select(Company).where(
+            Company.name == name,
         )
-        existing_job = session.execute(stmt).scalar_one_or_none()
+        existing_company = session.execute(stmt).scalar_one_or_none()
 
-        if existing_job:
-            print(f"Skipping: Job '{title}' at '{company}' already exists.")
+        if existing_company:
+            print(f"Skipping: Job '{name}' already exists.")
             return None
 
         try:
-            new_job = Job(
-                company=company,
-                title=title,
-                location=location,
+            new_company = Company(
+                name=name,
                 url=url
             )
-            session.add(new_job)
+            session.add(new_company)
             session.commit()
-            print(f"Success: Added '{title}' at '{company}'")
-            return new_job
+            print(f"Success: Added '{name}'")
+            return new_company
 
         except Exception as e:
             session.rollback()
@@ -115,6 +112,16 @@ def add_job(company, title, location, url):
             url (str): Job posting url.
     """
     with Session(job_engine) as session:
+        # Checks if specific job at this company exists
+        stmt = select(Job).where(
+            Job.company == company,
+            Job.title == title
+        )
+        existing_job = session.execute(stmt).scalar_one_or_none()
+
+        if existing_job:
+            print(f"Skipping: Job '{title}' at '{company}' already exists.")
+            return None
         try:
             new_job = Job(
                 company=company,
