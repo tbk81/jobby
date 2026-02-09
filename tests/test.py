@@ -5,8 +5,8 @@ from src.db_manager import *
 # remove_company("Erasca")
 # list_companies()
 
-# add_job("Erasca", "VP Global Pharmacovigilance", "San Diego, CA or remote",
-#         "https://www.erasca.com/jobs/vp-global-pharmacovigilance/")
+add_job("Erasca", "VP Global Pharmacovigilance", "San Diego, CA or remote",
+        "https://www.erasca.com/jobs/vp-global-pharmacovigilance/")
 
 
 # Used to populate the db from a csv file
@@ -18,7 +18,5 @@ from src.db_manager import *
 # for row in data_rows[1:]:
 #     print(row)
 
-remove_job("VP Global Pharmacovigilance")
-
-# Assoc Director or Director, Process Development & Manufacturing
-# VP Global Pharmacovigilance
+# remove_job("VP Global Pharmacovigilance")
+list_job_titles()

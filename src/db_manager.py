@@ -19,7 +19,7 @@ class Job(Base):
     __tablename__ = "jobs"
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     company: Mapped[str] = mapped_column(String(250), nullable=False)
-    title: Mapped[str] = mapped_column(String(250), unique=True, nullable=False)
+    title: Mapped[str] = mapped_column(String(250), nullable=False)
     location: Mapped[str] = mapped_column(String(250), nullable=False)
     url: Mapped[str] = mapped_column(String(250), nullable=False)
     date_added: Mapped[date] = mapped_column(Date, default=func.current_date())
@@ -54,23 +54,31 @@ def add_company(name, url):
     #     session.commit()
     #     print(f"Success: Added '{name}'")
 
-    with Session(company_engine) as session:
+    with Session(job_engine) as session:
+        # Checks if specific job at this company exists
+        stmt = select(Job).where(
+            Job.company == company,
+            Job.title == title
+        )
+        existing_job = session.execute(stmt).scalar_one_or_none()
+
+        if existing_job:
+            print(f"Skipping: Job '{title}' at '{company}' already exists.")
+            return None
+
         try:
-            new_company = Company(
-                name=name,
+            new_job = Job(
+                company=company,
+                title=title,
+                location=location,
                 url=url
             )
-            session.add(new_company)
+            session.add(new_job)
             session.commit()
-            print(f"Success: Added '{name}' to the company database.")
-            return new_company
-        except IntegrityError:
-            # This block runs if the name already exists (unique constraint violation)
-            session.rollback()  # Cancel the pending transaction
-            print(f"Error: The company '{name}' already exists.")
-            return None
+            print(f"Success: Added '{title}' at '{company}'")
+            return new_job
+
         except Exception as e:
-            # Catch any other unexpected errors
             session.rollback()
             print(f"An unexpected error occurred: {e}")
             return None
