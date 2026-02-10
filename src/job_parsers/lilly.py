@@ -30,9 +30,10 @@ else:
 
     for job in range(len(job_titles)):
         title = job_titles[job].text.strip()
-        location = job_locations[job].text.replace("Location", "").strip().split(",")
+        clean_location = job_locations[job].text.replace("Location", "").strip().split(",")
+        location = ",".join(clean_location[:2])
         url = job_url[job].get_attribute("href")
         if title:
-            print(f'{title}\t{location[0]},{location[1]}\n{url}')
+            add_job("Lilly", title, location, url)
+            # print(f'{title}\t{location}\n{url}')
 site_driver.quit()
-
