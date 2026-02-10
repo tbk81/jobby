@@ -10,14 +10,16 @@ site_url = get_company_url("Lilly")
 site_driver = sel_driver(site_url)
 city_location = "San Diego, CA"
 
+# Finds the location search button and input the city
 try:
     button = site_driver.find_element(By.ID, "gllocationInput")
 except NoSuchElementException:
-    print("not found")
+    print("Search button Not found")
 else:
     button.send_keys(city_location)
     button.send_keys(Keys.RETURN)
 
+# Finds the element with the job and waits until it's available.
 try:
     job_element = WebDriverWait(site_driver, 10).until(
         ec.visibility_of_element_located((By.CSS_SELECTOR, ".job-title")))
@@ -35,5 +37,4 @@ else:
         url = job_url[job].get_attribute("href")
         if title:
             add_job("Lilly", title, location, url)
-            # print(f'{title}\t{location}\n{url}')
 site_driver.quit()
