@@ -94,6 +94,21 @@ def remove_company(name):
             print(f"Warning: Could not delete '{name}' because it does not exist.")
 
 
+def get_company_url(name):
+    """
+    Searches for a company by name and returns its URL.
+    Returns None if the company is not found.
+    """
+    with Session(company_engine) as session:
+        # Select ONLY the 'url' column where the name matches
+        stmt = select(Company.url).where(Company.name == name)
+        # .scalar() returns the single value (the string) directly
+        # If no row is found, it returns None automatically
+        url = session.execute(stmt).scalar()
+
+        return url
+
+
 
 # --------------------------------------- job db functions --------------------------------------- #
 def list_job_titles():

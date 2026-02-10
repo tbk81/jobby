@@ -1,9 +1,9 @@
 import csv
 from src.db_manager import *
 
-add_company("Erasca", "https://www.erasca.com/open-positions/")
+# add_company("Lilly", "https://careers.lilly.com/us/en")
 # remove_company("Erasca")
-list_companies()
+# list_companies()
 
 # add_job("Erasca", "VP Global Pharmacovigilance", "San Diego, CA or remote",
 #         "https://www.erasca.com/jobs/vp-global-pharmacovigilance/")

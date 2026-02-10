@@ -1,12 +1,11 @@
-from path_finder import html_data_path
 from src.site_scraper import sel_driver
 from src.company_manager import *
 from bs4 import BeautifulSoup
 from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.by import By
 
-site_driver = sel_driver(url_grabber("Mirador"))
-# path_to_html = html_data_path('mirador')
+site_url = get_company_url("Miradoe")
+site_driver = sel_driver(site_url)
 
 try:
     button = site_driver.find_element(By.ID, "CybotCookiebotDialogBodyLevelButtonLevelOptinAllowAll")
@@ -19,8 +18,6 @@ try:
     frame = site_driver.find_element(By.ID, "grnhse_iframe")
     site_driver.switch_to.frame(frame)
     html = site_driver.page_source
-    # job_titles = site_driver.find_elements(By.XPATH, "//p[@class='body body--medium']")
-    # job_urls = site_driver.find_elements(By.TAG_NAME, "a")
 except NoSuchElementException:
     print("element not found")
 else:
