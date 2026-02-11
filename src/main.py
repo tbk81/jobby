@@ -6,7 +6,7 @@ from sqlalchemy import Integer, String, Date, select
 from sqlalchemy.sql import func
 from datetime import date
 
-# --- 1. SETUP PATHS ---
+# SETUP PATHS
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 DB_FOLDER = os.path.join(BASE_DIR, "databases")
 
@@ -14,14 +14,14 @@ DB_FOLDER = os.path.join(BASE_DIR, "databases")
 companies_db_path = os.path.join(DB_FOLDER, "companies.db")
 jobs_db_path = os.path.join(DB_FOLDER, "jobs.db")
 
-# --- 2. CONFIGURE FLASK ---
+# CONFIGURE FLASK
 app = Flask(__name__)
 
 # The "Default" database (Companies)
 app.config["SQLALCHEMY_DATABASE_URI"] = f"sqlite:///{companies_db_path}"
 
-# The "Extra" databases (Jobs)
-# We give this one a name/key: 'job_db'
+# The other databases (Jobs). This can allow for multiple database files
+# Give name/key: 'job_db'
 app.config["SQLALCHEMY_BINDS"] = {
     "job_db": f"sqlite:///{jobs_db_path}"
 }
@@ -30,7 +30,7 @@ app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 db = SQLAlchemy(app)
 
 
-# --- 3. DEFINE MODELS ---
+# DEFINE MODELS
 
 class Company(db.Model):
     # No bind key needed -> uses the default SQLALCHEMY_DATABASE_URI
@@ -43,7 +43,7 @@ class Company(db.Model):
 
 
 class Job(db.Model):
-    # This magic line tells Flask to use the 'job_db' file defined in BINDS
+    # Tells Flask to use the 'job_db' file defined in BINDS
     __bind_key__ = "job_db"
     __tablename__ = "jobs"
 
@@ -55,17 +55,17 @@ class Job(db.Model):
     date_added: Mapped[date] = mapped_column(Date, default=func.current_date())
 
 
-# --- 4. CREATE TABLES ---
+# CREATE TABLES
 # This will create 'companies' in companies.db and 'jobs' in jobs.db automatically
 with app.app_context():
     db.create_all()
-    print("Connected to both databases.")
+    print("Connected to all databases.")
 
 
-# --- 5. ROUTES ---
+# ROUTES
 @app.route('/all-data')
 def show_all():
-    # We can query both seamlessly
+    # Query both db's
     companies = db.session.execute(select(Company)).scalars().all()
     jobs = db.session.execute(select(Job)).scalars().all()
 
