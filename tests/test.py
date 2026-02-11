@@ -19,4 +19,4 @@ from src.db_manager import *
 #     print(row)
 
 # remove_job("VP Global Pharmacovigilance")
-# list_job_titles()
+list_job_titles()
