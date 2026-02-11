@@ -1,65 +1,121 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, jsonify, request
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, sessionmaker
-from sqlalchemy import create_engine, Integer, String, Float
+from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy import Integer, String, Date, select
+from sqlalchemy.sql import func
+from datetime import date
+# import os
 
+# --- 1. SETUP FLASK & DATABASE ---
 app = Flask(__name__)
 
+# Ensure the "databases" folder exists
+# if not os.path.exists("databases"):
+#     os.makedirs("databases")
 
-# class Base(DeclarativeBase):
-#     pass
-# db = SQLAlchemy(model_class=Base)
-# configure the SQLite database, relative to the app instance folder
-# app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///new-books-collection.db"
-# initialize the app with the extension
-company_engine = create_engine("sqlite:///src/databases/companies.db")
-job_engine = create_engine(f"sqlite:///src/databases/jobs.db")
+# Configure the database URI
+app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///databases/job_board.db"
+app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
-company_session = sessionmaker(bind=company_engine)
-company_session = company_session()
-
-job_session = sessionmaker(bind=job_engine)
-job_session = job_session()
-
-company_base = declarative_base()
-job_base = declarative_base()
-
-db.init_app(app)
-
-class Book(db.Model):
-    id: Mapped[int] = mapped_column(Integer, primary_key=True)  # When creating new records, the primary key
-    # fields is optional. The id field will be auto-generated.
-    title: Mapped[str] = mapped_column(String(250), unique=True, nullable=False)
-    author: Mapped[str] = mapped_column(String(250), nullable=False)
-    rating: Mapped[float] = mapped_column(Float, nullable=False)
-
-    # This will allow each book object to be identified by its title when printed.
-    def __repr__(self):
-        return f'<Book {self.title}>'
+# Initialize the Database Extension
+db = SQLAlchemy(app)
 
 
+# --- 2. DEFINE MODELS ---
+# In Flask, we inherit from db.Model instead of creating our own Base
+
+class Company(db.Model):
+    __tablename__ = "companies"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    name: Mapped[str] = mapped_column(String(250), unique=True, nullable=False)
+    url: Mapped[str] = mapped_column(String(250), nullable=False)
+    date_added: Mapped[date] = mapped_column(Date, default=func.current_date())
 
 
+class Job(db.Model):
+    __tablename__ = "jobs"
 
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    company: Mapped[str] = mapped_column(String(250), nullable=False)  # Storing company name as string
+    title: Mapped[str] = mapped_column(String(250), nullable=False)
+    location: Mapped[str] = mapped_column(String(250), nullable=False)
+    url: Mapped[str] = mapped_column(String(250), nullable=False)
+    date_added: Mapped[date] = mapped_column(Date, default=func.current_date())
+
+
+# --- 3. HELPER FUNCTIONS (Refactored for Flask) ---
+
+def add_company_to_db(name, url):
+    """Adds a company if it doesn't exist."""
+    # We use db.session directly now
+    existing = db.session.execute(select(Company).where(Company.name == name)).scalar_one_or_none()
+
+    if existing:
+        return f"Skipped: {name} already exists."
+
+    new_company = Company(name=name, url=url)
+    db.session.add(new_company)
+    db.session.commit()
+    return f"Success: Added {name}"
+
+
+def add_job_to_db(company, title, location, url):
+    """Adds a job if (Company + Title) doesn't exist."""
+    existing = db.session.execute(
+        select(Job).where(Job.company == company, Job.title == title)
+    ).scalar_one_or_none()
+
+    if existing:
+        return f"Skipped: {title} at {company} already exists."
+
+    new_job = Job(company=company, title=title, location=location, url=url)
+    db.session.add(new_job)
+    db.session.commit()
+    return f"Success: Added {title}"
+
+
+# --- 4. FLASK ROUTES (Web Interface) ---
+
+@app.route('/')
+def home():
+    return "<h1>Job Board API is Running</h1><p>Go to /jobs or /companies to see data.</p>"
+
+
+@app.route('/companies')
+def list_companies():
+    # Fetch all companies
+    companies = db.session.execute(select(Company)).scalars().all()
+    # Convert to a list of dictionaries (JSON)
+    return jsonify([{
+        "id": c.id,
+        "name": c.name,
+        "url": c.url,
+        "date": str(c.date_added)
+    } for c in companies])
+
+
+@app.route('/jobs')
+def list_jobs():
+    jobs = db.session.execute(select(Job)).scalars().all()
+    return jsonify([{
+        "company": j.company,
+        "title": j.title,
+        "location": j.location,
+        "url": j.url
+    } for j in jobs])
+
+
+# --- 5. RUN THE APP ---
 if __name__ == "__main__":
+    # This creates the tables if they don't exist yet
+    with app.app_context():
+        db.create_all()
+        print("Database initialized successfully.")
+
+        # Optional: Add dummy data for testing
+        print(add_company_to_db("Google", "https://google.com"))
+        print(add_job_to_db("Google", "Software Engineer", "Mountain View, CA", "https://google.com/careers"))
+
+    # Start the server
     app.run(debug=True)
-
-
-
-# ---------------------------------------------- TESTING ---------------------------------------------- #
-
-# @app.route("/add", methods=['GET', 'POST'])
-# def add():
-#     if request.method == 'POST':
-#         new_book = {
-#             "title": request.form["title"],
-#             "author": request.form["author"],
-#             "rating": request.form["rating"],
-#         }
-#         all_books.append(new_book)
-#         return redirect(url_for('home'))
-#     return render_template('add.html')
-
-
-
-
