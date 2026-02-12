@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Jobby</title>
+</head>
+<body>
+<h1>My Companies</h1>
+        {% if all_companies == []: %}
+        <p>Company list is empty.</p>
+        {% endif %}
+    <ul>
+        {% for company in all_companies %}
+        <li>
+            {{company.name}} - {{company.url}}
+        </li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
