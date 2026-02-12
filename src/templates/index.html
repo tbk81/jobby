@@ -12,12 +12,9 @@
     <ul>
         {% for job in all_jobs %}
         <li>
-<!--            <a href="{{ url_for('delete', id=book.id) }}">Delete</a>-->
-            {{job.company}} {{job.tile}} - {{job.url}}
-<!--            <a href="{{ url_for('edit', id=book.id) }}">Edit Rating</a>-->
+            {{job.company}} {{job.title}} - {{job.url}}
         </li>
         {% endfor %}
     </ul>
-<!--<a href="{{ url_for('add') }}">Add New Book</a>-->
 </body>
 </html>

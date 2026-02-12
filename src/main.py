@@ -79,13 +79,12 @@ with app.app_context():
 @app.route('/')
 def home():
     # READ ALL RECORDS
-    # Construct a query to select from the database. Returns the rows in the database
-    companies = db.session.execute(select(Company)).scalars().all()
-    jobs = db.session.execute(select(Job)).scalars().all()
-    # Use .scalars() to get the elements rather than entire rows from the database
-    all_companies = companies.scalars().all()
-    all_jobs = jobs.scalars().all()
-    return render_template('index.html', all_companiues=all_companies, all_jobs=all_jobs)
+    # Construct a query to select from the database. Returns the rows in the database.
+    job_result = db.session.execute(db.select(Job).order_by(Job.company))
+
+    # Use .scalars() to get the elements than entire rows from the database.
+    all_jobs = job_result.scalars().all()
+    return render_template('index.html', all_jobs=all_jobs)
 
 
 if __name__ == "__main__":
