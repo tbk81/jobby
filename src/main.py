@@ -63,18 +63,29 @@ with app.app_context():
 
 
 # ROUTES
-@app.route('/all-data')
-def show_all():
-    # Query both db's
+# @app.route('/')
+# def show_all():
+#     # Query both db's
+#     companies = db.session.execute(select(Company)).scalars().all()
+#     jobs = db.session.execute(select(Job)).scalars().all()
+#
+#     return jsonify({
+#         "total_companies": len(companies),
+#         "total_jobs": len(jobs),
+#         "companies": [c.name for c in companies],
+#         "jobs": [j.company + "  " + j.title for j in jobs]
+#     })
+
+@app.route('/')
+def home():
+    # READ ALL RECORDS
+    # Construct a query to select from the database. Returns the rows in the database
     companies = db.session.execute(select(Company)).scalars().all()
     jobs = db.session.execute(select(Job)).scalars().all()
-
-    return jsonify({
-        "total_companies": len(companies),
-        "total_jobs": len(jobs),
-        "companies": [c.name for c in companies],
-        "jobs": [j.company + "  " + j.title for j in jobs]
-    })
+    # Use .scalars() to get the elements rather than entire rows from the database
+    all_companies = companies.scalars().all()
+    all_jobs = jobs.scalars().all()
+    return render_template('index.html', all_companiues=all_companies, all_jobs=all_jobs)
 
 
 if __name__ == "__main__":
