@@ -2,22 +2,22 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Library</title>
+    <title>Jobby</title>
 </head>
 <body>
-<h1>My Library</h1>
-        {% if all_books == []: %}
-        <p>Library is empty.</p>
+<h1>My Jobs</h1>
+        {% if all_jobs == []: %}
+        <p>Job list is empty.</p>
         {% endif %}
     <ul>
-        {% for book in all_books %}
+        {% for job in all_jobs %}
         <li>
-            <a href="{{ url_for('delete', id=book.id) }}">Delete</a>
-            {{book.title}} - {{book.author}} - {{book.rating}}/10
-            <a href="{{ url_for('edit', id=book.id) }}">Edit Rating</a>
+<!--            <a href="{{ url_for('delete', id=book.id) }}">Delete</a>-->
+            {{job.company}} {{job.tile}} - {{job.url}}
+<!--            <a href="{{ url_for('edit', id=book.id) }}">Edit Rating</a>-->
         </li>
         {% endfor %}
     </ul>
-<a href="{{ url_for('add') }}">Add New Book</a>
+<!--<a href="{{ url_for('add') }}">Add New Book</a>-->
 </body>
 </html>
