@@ -3,36 +3,45 @@
 <head>
     <meta charset="UTF-8">
     <title>Jobby</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
-<body>
-<h1>My Jobs</h1>
-<hr />
-<h2>Select a Company</h2>
+<body class="combined-layout">
 
-    <form action="/process_selection" method="POST">
-        <label for="company">Choose a company:</label>
+    <div class="dashboard-card">
+        <h2>Job Scraper</h2>
 
-        <select name="company_name" id="company">
-            <option value="">-- Select a Company --</option>
+        <form action="/process_selection" method="POST">
+            <label for="company">Target Company:</label>
+            <select name="company_name" id="company" required>
+                <option value="" disabled selected>-- Select a Company --</option>
+                {% for company in all_companies %}
+                    <option value="{{ company.name }}">{{ company.name }}</option>
+                {% endfor %}
+            </select>
+            <button type="submit">Start Scraper</button>
+        </form>
+    </div>
 
-            {% for company in all_companies %}
-                <option value="{{ company.name }}">{{ company.name }}</option>
+    <div class="jobs-container">
+        <h2>Current Job Openings</h2>
+
+        <div class="job-list">
+            {% for job in all_jobs %}
+                <div class="job-card">
+                    <div class="job-info">
+                        <h3>{{ job.title }}</h3>
+                        <p class="company">{{ job.company }}</p>
+                        <p class="location">📍 {{ job.location }}</p>
+                    </div>
+                    <div class="job-action">
+                        <a href="{{ job.url }}" target="_blank" class="apply-btn">View Job</a>
+                    </div>
+                </div>
+            {% else %}
+                <p class="empty-state">No jobs found in the database yet. Run the scraper first!</p>
             {% endfor %}
+        </div>
+    </div>
 
-        </select>
-
-        <button type="submit">Go</button>
-    </form>
-
-{% if all_jobs == []: %}
-        <p>Job list is empty.</p>
-        {% endif %}
-    <ul>
-        {% for job in all_jobs %}
-        <li>
-            {{job.company}} {{job.title}} - {{job.url}}
-        </li>
-        {% endfor %}
-    </ul>
 </body>
 </html>

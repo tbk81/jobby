@@ -1,5 +1,5 @@
 import os
-from flask import Flask, jsonify, render_template
+from flask import Flask, jsonify, render_template, request
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import Mapped, mapped_column
 from sqlalchemy import Integer, String, Date, select
@@ -86,6 +86,16 @@ def company_li():
     # Use .scalars() to get the elements than entire rows from the database.
     all_companies = company_result.scalars().all()
     return render_template('companies.html', all_companies=all_companies)
+
+
+@app.route('/process_selection', methods=['POST'])
+def process_selection():
+    # Get the value the user selected in the dropdown
+    selected_company = request.form.get('company_name')
+
+    if selected_company:
+        return f"You selected: {selected_company}! Now we can run our scraper for this company."
+    return "You didn't select a company.", 400
 
 
 if __name__ == "__main__":
