@@ -69,10 +69,12 @@ def home():
     # READ ALL RECORDS
     # Construct a query to select from the database. Returns the rows in the database.
     job_result = db.session.execute(db.select(Job).order_by(Job.company))
+    company_result = db.session.execute(db.select(Company).order_by(Company.name))
 
     # Use .scalars() to get the elements than entire rows from the database.
     all_jobs = job_result.scalars().all()
-    return render_template('index.html', all_jobs=all_jobs)
+    all_companies = company_result.scalars().all()
+    return render_template('index.html', all_jobs=all_jobs, all_companies=all_companies)
 
 
 @app.route('/company-li')

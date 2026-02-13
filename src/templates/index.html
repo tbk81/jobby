@@ -6,7 +6,25 @@
 </head>
 <body>
 <h1>My Jobs</h1>
-        {% if all_jobs == []: %}
+<hr />
+<h2>Select a Company</h2>
+
+    <form action="/process_selection" method="POST">
+        <label for="company">Choose a company:</label>
+
+        <select name="company_name" id="company">
+            <option value="">-- Select a Company --</option>
+
+            {% for company in all_companies %}
+                <option value="{{ company.name }}">{{ company.name }}</option>
+            {% endfor %}
+
+        </select>
+
+        <button type="submit">Go</button>
+    </form>
+
+{% if all_jobs == []: %}
         <p>Job list is empty.</p>
         {% endif %}
     <ul>
