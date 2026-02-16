@@ -7,18 +7,29 @@
 </head>
 <body class="combined-layout">
 
-    <div class="dashboard-card">
+    <div class="dashboard-card primary-card">
         <h2>Job Scraper</h2>
 
         <form action="/process_selection" method="POST">
-            <label for="company">Target Company:</label>
+            <label for="company">Company:</label>
             <select name="company_name" id="company" required>
                 <option value="" disabled selected>-- Select a Company --</option>
                 {% for company in all_companies %}
                     <option value="{{ company.name }}">{{ company.name }}</option>
                 {% endfor %}
             </select>
-            <button type="submit">Start Scraper</button>
+            <button type="submit">Start Scrape</button>
+        </form>
+    </div>
+
+    <div class="dashboard-card secondary-card">
+        <h2>Add New Company</h2>
+        <form action="/add_company" method="POST">
+            <div class="form-row">
+                <input type="text" name="company_name" placeholder="Company Name (e.g. Google)" required>
+                <input type="url" name="company_url" placeholder="Careers URL (e.g. https://careers.google.com)" required>
+            </div>
+            <button type="submit" class="add-btn">Add Company to Database</button>
         </form>
     </div>
 
@@ -31,7 +42,7 @@
                     <div class="job-info">
                         <h3>{{ job.title }}</h3>
                         <p class="company">{{ job.company }}</p>
-                        <p class="location">📍 {{ job.location }}</p>
+                        <p class="location">{{ job.location }}</p>
                     </div>
                     <div class="job-action">
                         <a href="{{ job.url }}" target="_blank" class="apply-btn">View Job</a>

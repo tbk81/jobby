@@ -1,5 +1,5 @@
 import os
-from flask import Flask, jsonify, render_template, request
+from flask import Flask, render_template, request, redirect
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import Mapped, mapped_column
 from sqlalchemy import Integer, String, Date, select
@@ -33,7 +33,7 @@ db = SQLAlchemy(app)
 # DEFINE MODELS
 
 class Company(db.Model):
-    # No bind key needed -> uses the default SQLALCHEMY_DATABASE_URI
+    # No bind key needed, uses the default SQLALCHEMY_DATABASE_URI
     __tablename__ = "companies"
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
@@ -87,6 +87,21 @@ def company_li():
     all_companies = company_result.scalars().all()
     return render_template('companies.html', all_companies=all_companies)
 
+
+@app.route('/add_company', methods=['POST'])
+def add_company():
+    name = request.form.get('company_name')
+    url = request.form.get('company_url')
+
+    # Check if company exists to prevent duplicates
+    existing = db.session.execute(select(Company).where(Company.name == name)).scalar_one_or_none()
+    if not existing:
+        new_company = Company(name=name, url=url)
+        db.session.add(new_company)
+        db.session.commit()
+
+    # Refresh the page automatically
+    return redirect('/')
 
 @app.route('/process_selection', methods=['POST'])
 def process_selection():
