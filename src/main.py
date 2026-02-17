@@ -1,10 +1,12 @@
 import os
-from flask import Flask, render_template, request, redirect
+from flask import Flask, render_template, request, redirect, flash
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import Mapped, mapped_column
 from sqlalchemy import Integer, String, Date, select
 from sqlalchemy.sql import func
 from datetime import date
+
+SECRET_KEY = os.environ.get("SECRET_KEY")
 
 # SETUP PATHS
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
@@ -16,6 +18,9 @@ jobs_db_path = os.path.join(DB_FOLDER, "jobs.db")
 
 # CONFIGURE FLASK
 app = Flask(__name__)
+
+# Secret key for using flash
+app.secret_key = SECRET_KEY
 
 # The "Default" database (Companies)
 app.config["SQLALCHEMY_DATABASE_URI"] = f"sqlite:///{companies_db_path}"
@@ -93,14 +98,18 @@ def add_company():
     name = request.form.get('company_name')
     url = request.form.get('company_url')
 
-    # Check if company exists to prevent duplicates
     existing = db.session.execute(select(Company).where(Company.name == name)).scalar_one_or_none()
-    if not existing:
+
+    if existing:
+        # Flash an error message
+        flash(f"Error: {name} is already in the database!", "error")
+    else:
         new_company = Company(name=name, url=url)
         db.session.add(new_company)
         db.session.commit()
+        # Flash a success message
+        flash(f"Success! {name} has been added.", "success")
 
-    # Refresh the page automatically
     return redirect('/')
 
 @app.route('/process_selection', methods=['POST'])

@@ -7,6 +7,16 @@
 </head>
 <body class="combined-layout">
 
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <div class="flash-container">
+          {% for category, message in messages %}
+            <div class="flash-message {{ category }}">{{ message }}</div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+
     <div class="dashboard-card primary-card">
         <h2>Job Scraper</h2>
 

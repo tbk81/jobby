@@ -92,3 +92,50 @@ button:active { transform: scale(0.98); }
 }
 .apply-btn:hover { background-color: #27ae60; }
 .empty-state { color: #7f8c8d; font-style: italic; width: 100%; text-align: center;}
+
+/* =========================================
+   POP-UP / FLASH MESSAGE STYLES
+   ========================================= */
+
+.flash-container {
+    position: fixed; /* Stays at the top even if you scroll */
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%); /* Centers it perfectly */
+    z-index: 1000; /* Ensures it sits on top of everything else */
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.flash-message {
+    padding: 15px 30px;
+    border-radius: 8px;
+    color: white;
+    font-weight: bold;
+    font-size: 15px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+
+    /* Triggers the animations below: Slides in, waits 3s, fades out */
+    animation: slideDown 0.4s ease-out, fadeOut 0.5s ease-in 3s forwards;
+}
+
+/* Colors based on the flash category */
+.flash-message.success {
+    background-color: #2ecc71; /* Bright Green */
+}
+
+.flash-message.error {
+    background-color: #e74c3c; /* Bright Red */
+}
+
+/* Animations */
+@keyframes slideDown {
+    from { transform: translateY(-50px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes fadeOut {
+    from { opacity: 1; }
+    to { opacity: 0; visibility: hidden; }
+}
