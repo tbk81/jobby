@@ -63,11 +63,11 @@ else:
             job_url = "No link available"
             job_location = "Unknown"
 
-        print(f"Title:    {job_title}")
-        print(f"Location: {job_location}")
-        print(f"Link:     {job_url}")
-        print("-" * 50)
+        # print(f"Title:    {job_title}")
+        # print(f"Location: {job_location}")
+        # print(f"Link:     {job_url}")
+        # print("-" * 50)
 
-        # if title:
-        #     add_job("Lilly", title, location, url)
-# site_driver.quit()
+        if job_location == "San Diego":
+            add_job("Novartis", job_title, job_location, job_url)
+site_driver.quit()
