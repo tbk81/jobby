@@ -38,7 +38,6 @@ except TimeoutException:
 
 # Finds the element with the job and waits until it's available.
 job_locator = (By.CSS_SELECTOR, 'td[class="views-field views-field-field-job-title"]')
-loc_locator = (By.CSS_SELECTOR, 'td[class="views-field views-field-field-job-work-location"]')
 try:
     job_titles = WebDriverWait(site_driver, 10).until(
         ec.visibility_of_all_elements_located(job_locator))
