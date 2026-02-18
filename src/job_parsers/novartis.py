@@ -20,18 +20,31 @@ else:
     submit = site_driver.find_element(By.ID, 'edit-submit')
     submit.click()
 
+# Finds the sort by location link and presses it twice
+site_sort_locator = (By.CSS_SELECTOR, 'a[title="sort by Site"]')
 try:
-    # Wait up to 10 seconds for the specific link to become clickable
-    site_sort_link = WebDriverWait(site_driver, 10).until(
-        ec.element_to_be_clickable((By.CSS_SELECTOR, 'a[title="sort by Site"]'))
-    )
-    print("Site header link found!")
-    site_sort_link.click()
-    print("Successfully clicked the Site header.")
+    # Wait ONLY for the element to exist in the HTML, not for it to be "clickable"
+    first_sort_link = WebDriverWait(site_driver, 10).until(
+        ec.presence_of_element_located(site_sort_locator))
+    # Force the click using JavaScript to bypass any overlapping elements
+    site_driver.execute_script("arguments[0].click();", first_sort_link)
+
+    # Click the element again for descending
+    WebDriverWait(site_driver, 10).until(
+        ec.staleness_of(first_sort_link))
+    second_sort_link = WebDriverWait(site_driver, 10).until(
+        ec.presence_of_element_located(site_sort_locator))
+    site_driver.execute_script("arguments[0].click();", second_sort_link)
+
+
 
 except TimeoutException:
-    print("Site header link not found or did not become clickable.")
+    print("Link completely missing. It might be inside an iframe or the page hasn't loaded.")
 
+
+# xpath_selector = "//th[contains(@class, 'views-field-field-job-work-location')]/a"
+# site_sort_link = site_driver.find_element(By.XPATH, xpath_selector)
+# site_sort_link.click()
 
 # site_button = WebDriverWait(site_driver, 3).until(
 #     ec.element_to_be_clickable((By.CSS_SELECTOR, 'a[title="sort by Site"]')))
