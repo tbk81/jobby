@@ -1,5 +1,6 @@
 import os
-from flask import Flask, render_template, request, redirect, flash
+import importlib
+from flask import Flask, jsonify, render_template, request, redirect, flash, url_for
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import Mapped, mapped_column
 from sqlalchemy import Integer, String, Date, select
@@ -114,12 +115,62 @@ def add_company():
 
 @app.route('/process_selection', methods=['POST'])
 def process_selection():
-    # Get the value the user selected in the dropdown
     selected_company = request.form.get('company_name')
 
-    if selected_company:
-        return f"You selected: {selected_company}! Now we can run our scraper for this company."
-    return "You didn't select a company.", 400
+    if not selected_company:
+        flash("Error: Please select a company first.", "error")
+        return redirect('/')
+
+    # Get the company URL from the database
+    company = db.session.execute(
+        select(Company).where(Company.name == selected_company)
+    ).scalar_one_or_none()
+
+    if not company:
+        flash("Error: Company not found in database.", "error")
+        return redirect('/')
+
+    # Dynamically load the correct parser script
+    # e.g., "Eli Lilly" becomes "eli_lilly"
+    module_name = selected_company.lower().replace(" ", "_")
+
+    try:
+        # Look in the job_parsers folder for the module
+        parser = importlib.import_module(f"job_parsers.{module_name}")
+
+        # 3. Run the scraper function and pass the URL
+        jobs_found = parser.scrape_jobs(company.url)
+
+        # 4. Save new jobs to the database
+        new_jobs_count = 0
+        for job in jobs_found:
+            # Check if this exact job at this company already exists
+            existing_job = db.session.execute(
+                select(Job).where(Job.company == selected_company, Job.title == job['title'])
+            ).scalar_one_or_none()
+
+            if not existing_job:
+                new_job = Job(
+                    company=selected_company,
+                    title=job['title'],
+                    location=job['location'],
+                    url=job['url']
+                )
+                db.session.add(new_job)
+                new_jobs_count += 1
+
+        db.session.commit()
+
+        # 5. Flash success message
+        flash(f"Success! Scraped {len(jobs_found)} jobs. Added {new_jobs_count} new ones to the board.", "success")
+
+    except ModuleNotFoundError:
+        flash(f"Error: Could not find a script named '{module_name}.py' in the job_parsers folder.", "error")
+    except Exception as e:
+        flash(f"An error occurred while scraping: {str(e)}", "error")
+
+    # 6. Redirect to the home page to see the updated jobs
+    return redirect('/')
 
 
 if __name__ == "__main__":
