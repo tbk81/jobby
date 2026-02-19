@@ -16,6 +16,16 @@ body.combined-layout {
     gap: 30px;
 }
 
+/* =========================================
+   LOGO STYLING
+   ========================================= */
+.site-logo {
+    max-width: 250px; /* Change this number to make your logo bigger or smaller */
+    height: auto;     /* Keeps the image proportions correct */
+    margin-top: -20px; /* Pulls it up slightly from the cards below */
+    margin-bottom: 10px;
+}
+
 /* Dashboard Cards (Sections 1 & 2) */
 .dashboard-card {
     background-color: white;
