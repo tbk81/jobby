@@ -74,13 +74,27 @@ with app.app_context():
 def home():
     # READ ALL RECORDS
     # Construct a query to select from the database. Returns the rows in the database.
-    job_result = db.session.execute(db.select(Job).order_by(Job.company))
+    # job_result = db.session.execute(db.select(Job).order_by(Job.company))
     company_result = db.session.execute(db.select(Company).order_by(Company.name))
 
     # Use .scalars() to get the elements than entire rows from the database.
-    all_jobs = job_result.scalars().all()
+    # all_jobs = job_result.scalars().all()
     all_companies = company_result.scalars().all()
-    return render_template('index.html', all_jobs=all_jobs, all_companies=all_companies)
+    # Check if the URL has a company filter (e.g., /?company=Google)
+    scraped_company = request.args.get('company')
+
+    if scraped_company:
+        # Jobs for the company that was just scraped
+        display_jobs = db.session.execute(
+            select(Job).where(Job.company == scraped_company)
+        ).scalars().all()
+    else:
+        # If no company is selected (first time loading the page), show an empty list
+        # (or change this to select(Job) if you prefer to see all jobs by default)
+        display_jobs = []
+
+    return render_template('index.html', all_companies=all_companies, all_jobs=display_jobs, scraped_company=scraped_company)
+    # return render_template('index.html', all_jobs=all_jobs, all_companies=all_companies)
 
 
 @app.route('/company-li')
@@ -138,10 +152,10 @@ def process_selection():
         # Look in the job_parsers folder for the module
         parser = importlib.import_module(f"job_parsers.{module_name}")
 
-        # 3. Run the scraper function and pass the URL
+        # Run the scraper function and pass the URL
         jobs_found = parser.scrape_jobs(company.url)
 
-        # 4. Save new jobs to the database
+        # Save new jobs to the database
         new_jobs_count = 0
         for job in jobs_found:
             # Check if this exact job at this company already exists
@@ -161,16 +175,17 @@ def process_selection():
 
         db.session.commit()
 
-        # 5. Flash success message
+        # Flash success message
         flash(f"Success! Scraped {len(jobs_found)} jobs. Added {new_jobs_count} new ones to the board.", "success")
 
     except ModuleNotFoundError:
         flash(f"Error: Could not find a script named '{module_name}.py' in the job_parsers folder.", "error")
     except Exception as e:
         flash(f"An error occurred while scraping: {str(e)}", "error")
+        print(f"An error occurred while scraping: {str(e)}", "error")
 
-    # 6. Redirect to the home page to see the updated jobs
-    return redirect('/')
+    # Redirect to the home page to see the updated jobs
+    return redirect(url_for('home', company=selected_company))
 
 
 if __name__ == "__main__":

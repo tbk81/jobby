@@ -46,10 +46,16 @@
     </div>
 
     <div class="jobs-container">
-        <h2>Current Job Openings</h2>
+        <h2>
+            {% if scraped_company %}
+                Jobs Scraped from {{ scraped_company }}
+            {% else %}
+                Job Board (Select a company above)
+            {% endif %}
+        </h2>
 
         <div class="job-list">
-            {% for job in all_jobs %}
+            {% for job in jobs %}
                 <div class="job-card">
                     <div class="job-info">
                         <h3>{{ job.title }}</h3>
@@ -61,9 +67,18 @@
                     </div>
                 </div>
             {% else %}
-                <p class="empty-state">No jobs found in the database yet. Run the scraper first!</p>
+                <div class="job-card">
+                    <p class="empty-state">No jobs to display right now. Run a scraper!</p>
+                </div>
             {% endfor %}
         </div>
+
+        {% if scraped_company %}
+            <div style="text-align: center; margin-top: 20px;">
+                <a href="/" style="color: #3498db; text-decoration: none; font-weight: bold;">← Clear Filter (Hide Jobs)</a>
+            </div>
+        {% endif %}
+
     </div>
 
 </body>
