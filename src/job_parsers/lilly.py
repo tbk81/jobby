@@ -1,17 +1,14 @@
 from src.site_scraper import sel_driver
-from src.db_manager import *
 from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
 
-site_url = get_company_url("Lilly")
-site_driver = sel_driver(site_url)
-city_location = "San Diego, CA"
-
 
 def scrape_jobs(url):
+    site_driver = sel_driver(url)
+    city_location = "San Diego, CA"
     scraped_data = []
     # Finds the location search button and input the city
     try:

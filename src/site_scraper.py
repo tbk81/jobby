@@ -12,7 +12,7 @@ headers = {
 def sel_driver(url):
     chrome_options = webdriver.ChromeOptions()
     chrome_options.add_experimental_option("detach", True)
-    # chrome_options.add_argument('--headless')
+    chrome_options.add_argument('--headless')
 
     user_data_dir = os.path.join(os.getcwd(), "chrome_profile")
     chrome_options.add_argument(f"--user-data-dir={user_data_dir}")
