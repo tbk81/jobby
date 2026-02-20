@@ -1,10 +1,8 @@
 from src.site_scraper import sel_driver
-from src.company_manager import *
 from bs4 import BeautifulSoup
 from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.by import By
 
-# site_url = get_company_url("Mirador")
 
 def scrape_jobs(url):
     scraped_data = []
@@ -23,11 +21,11 @@ def scrape_jobs(url):
     except NoSuchElementException:
         print("element not found")
     else:
-        with open('html_data/mirador.html', 'w') as file:
+        with open('src/html_data/mirador.html', 'w') as file:
             file.write(html)
     site_driver.quit()
 
-    with open('html_data/mirador.html') as file:
+    with open('src/html_data/mirador.html') as file:
         mirador_data = file.read()
     soup = BeautifulSoup(mirador_data, 'html.parser')
     #
@@ -49,3 +47,4 @@ def scrape_jobs(url):
     site_driver.quit()
 
     return scraped_data
+
