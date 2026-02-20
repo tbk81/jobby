@@ -1,17 +1,27 @@
 from bs4 import BeautifulSoup
 
-# with open('/Users/trevor/jobby/html_data/anaptysbio.html') as file:
-with open('/src/html_data/anaptysbio.html') as file:
-    anaptys_data = file.read()
-soup = BeautifulSoup(anaptys_data, 'html.parser')
+def scrape_jobs(url):
+    scraped_data = []
+    with open('/src/html_data/anaptysbio.html') as file:
+        anaptys_data = file.read()
+    soup = BeautifulSoup(anaptys_data, 'html.parser')
 
-job_titles = soup.find_all('a', class_='no-underline custom-link-color')
-job_locations = soup.find_all('span', style='line-height: 1.33;')
-job_urls = soup.find_all('a', class_='no-underline custom-link-color')
+    job_titles = soup.find_all('a', class_='no-underline custom-link-color')
+    job_locations = soup.find_all('span', style='line-height: 1.33;')
+    job_urls = soup.find_all('a', class_='no-underline custom-link-color')
 
 
-for i in range(len(job_titles)):
-    print(job_titles[i].text.strip())
-    print(job_locations[i].get_text(strip=True))
-    print(f'https://recruiting.paylocity.com{job_urls[i]['href'].strip()}')
-#     print("\n")
+    for i in range(len(job_titles)):
+        title = job_titles[i].text.strip()
+        location = job_locations[i].get_text(strip=True)
+        url = f'https://recruiting.paylocity.com{job_urls[i]['href'].strip()}'
+
+        scraped_data.append({
+                "title": title,
+                "location": location,
+                "url": url
+        })
+
+    site_driver.quit()
+
+    return scraped_data
