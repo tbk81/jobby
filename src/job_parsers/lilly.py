@@ -30,7 +30,7 @@ def scrape_jobs(url):
         job_locations = site_driver.find_elements(By.CSS_SELECTOR, ".job-location")
         job_url = site_driver.find_elements(By.CSS_SELECTOR, 'a[data-ph-at-id="job-link"]')
 
-        for job in range(len(job_titles)):
+        for job in job_titles:
             title = job_titles[job].text.strip()
             clean_location = job_locations[job].text.replace("Location", "").strip().split(",")
             location = ",".join(clean_location[:2])
