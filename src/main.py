@@ -182,7 +182,7 @@ def process_selection():
         flash(f"Error: Could not find a script named '{module_name}.py' in the job_parsers folder.", "error")
     except Exception as e:
         flash(f"An error occurred while scraping: {str(e)}", "error")
-        print(f"An error occurred while scraping: {str(e)}", "error")
+        print(f"{str(e)}", "error")
 
     # Redirect to the home page to see the updated jobs
     return redirect(url_for('home', company=selected_company))

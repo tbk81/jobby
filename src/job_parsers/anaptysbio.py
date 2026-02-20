@@ -1,8 +1,10 @@
 from bs4 import BeautifulSoup
+from src.site_scraper import write_site
 
 def scrape_jobs(url):
+    write_site(url, "anaptysbio")
     scraped_data = []
-    with open('/src/html_data/anaptysbio.html') as file:
+    with open('src/html_data/anaptysbio.html') as file:
         anaptys_data = file.read()
     soup = BeautifulSoup(anaptys_data, 'html.parser')
 
@@ -22,6 +24,6 @@ def scrape_jobs(url):
                 "url": url
         })
 
-    site_driver.quit()
+    # site_driver.quit()
 
     return scraped_data
