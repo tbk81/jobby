@@ -25,5 +25,5 @@ def sel_driver(url):
 # Pulls site HTML data to test parsing; this does not work for dynamic sites
 def write_site(url, name):
     job_response = requests.get(url, headers=headers)
-    with open(f'html_data/{name}.html', 'w') as file:
+    with open(f'src/html_data/{name}.html', 'w') as file:
         file.write(job_response.text)
