@@ -1,35 +1,19 @@
 from bs4 import BeautifulSoup
 from src.site_scraper import write_site
 
-ANAPTYS = "https://recruiting.paylocity.com/Recruiting/Jobs/All/d1d20c2d-0e1d-4869-820d-a5b454cfba0b/ANAPTYSBIO-INC"
+URL = "https://neomorph.com/careers.html"
+NAME = "neomorph"
+write_site(URL, NAME)
+# scraped_data = []
+with open(f"'src/html_data/{NAME}.html'") as file:
+    data = file.read()
+soup = BeautifulSoup(data, 'html.parser')
 
-
-def scrape_jobs(url):
-    write_site(url, "anaptysbio")
-    scraped_data = []
-    with open('src/html_data/anaptysbio.html') as file:
-        anaptys_data = file.read()
-    soup = BeautifulSoup(anaptys_data, 'html.parser')
-
-    job_titles = soup.find_all('a', class_='no-underline custom-link-color')
-    job_locations = soup.find_all('span', style='line-height: 1.33;')
-    job_urls = soup.find_all('a', class_='no-underline custom-link-color')
-
-    for i in range(len(job_titles)):
-        title = job_titles[i].text.strip()
-        location = job_locations[i].get_text(strip=True)
-        url = f'https://recruiting.paylocity.com{job_urls[i]['href'].strip()}'
-
-        scraped_data.append({
-            "title": title,
-            "location": location,
-            "url": url
-        })
-
-    # site_driver.quit()
-
-    return scraped_data
-
-
-out_put = scrape_jobs(ANAPTYS)
-print(out_put)
+# job_titles = soup.find_all('div', class_='title-contaier')
+# job_locations = soup.find_all('div', class_='info-container')
+# job_urls = soup.find_all('a', class_='job-link')
+#
+# for i in range(len(job_titles)):
+#     title = job_titles[i].text.strip()
+#     location = job_locations[i].get_text(strip=True)
+#     job_url = job_urls[i]['href'].strip()
