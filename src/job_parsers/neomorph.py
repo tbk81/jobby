@@ -1,26 +1,30 @@
-from bs4 import BeautifulSoup
-from src.site_scraper import write_site
+from src.site_scraper import sel_driver
+from selenium.common.exceptions import NoSuchElementException
+from selenium.webdriver.support import expected_conditions as ec
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.common.by import By
 
 def scrape_jobs(url):
-    write_site(url, "neomorph")
+    site_driver = sel_driver(url)
     scraped_data = []
-    with open('src/html_data/erasca.html') as file:
-        data = file.read()
-    soup = BeautifulSoup(data, 'html.parser')
+    try:
+        WebDriverWait(site_driver, 10).until(
+            ec.visibility_of_element_located((By.CSS_SELECTOR, ".ht-title-link")))
+    except NoSuchElementException:
+        print("element not found")
+    else:
+        job_titles = site_driver.find_elements(By.CSS_SELECTOR, ".ht-title-link")
+        job_locations = site_driver.find_elements(By.CSS_SELECTOR, ".ht-location")
 
-    job_titles = soup.find_all('div', class_='title-contaier')
-    job_locations = soup.find_all('div', class_='info-container')
-    job_urls = soup.find_all('a', class_='job-link')
+        for job in range(len(job_titles)):
+            title = job_titles[job].text.strip()
+            location = job_locations[job].text.strip()
+            job_url = job_titles[job].get_attribute("href")
 
-    for i in range(len(job_titles)):
-        title = job_titles[i].text.strip()
-        location = job_locations[i].get_text(strip=True).replace('→', '')
-        job_url = job_urls[i]['href'].strip()
-
-        scraped_data.append({
-            "title": title,
-            "location": location,
-            "url": job_url
-        })
+            scraped_data.append({
+                "title": title,
+                "location": location,
+                "url": job_url
+            })
 
     return scraped_data
