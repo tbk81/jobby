@@ -84,16 +84,17 @@ def home():
     scraped_company = request.args.get('company')
 
     if scraped_company:
-        # Jobs for the company that was just scraped
+        # Jobs for the company that was just scraped, sorted newest first
         display_jobs = db.session.execute(
-            select(Job).where(Job.company == scraped_company)
+            select(Job)
+            .where(Job.company == scraped_company)
+            .order_by(Job.date_added.desc(), Job.id.desc())  # Sorts by Date, then by ID (newest)
         ).scalars().all()
     else:
-        # If no company is selected (first time loading the page), show an empty list
-        # (or change this to select(Job) if you prefer to see all jobs by default)
         display_jobs = []
 
-    return render_template('index.html', all_companies=all_companies, all_jobs=display_jobs, scraped_company=scraped_company)
+    return render_template('index.html', all_companies=all_companies, all_jobs=display_jobs,
+                           scraped_company=scraped_company)
     # return render_template('index.html', all_jobs=all_jobs, all_companies=all_companies)
 
 
@@ -126,6 +127,7 @@ def add_company():
         flash(f"Success! {name} has been added.", "success")
 
     return redirect('/')
+
 
 @app.route('/process_selection', methods=['POST'])
 def process_selection():
@@ -186,6 +188,23 @@ def process_selection():
 
     # Redirect to the home page to see the updated jobs
     return redirect(url_for('home', company=selected_company))
+
+
+@app.route('/delete_job/<int:job_id>', methods=['POST'])
+def delete_job(job_id):
+    # Find the exact job by its ID
+    job_to_delete = db.session.execute(
+        select(Job).where(Job.id == job_id)).scalar_one_or_none()
+
+    if job_to_delete:
+        db.session.delete(job_to_delete)
+        db.session.commit()
+        flash("Job removed from the board.", "success")
+    else:
+        flash("Error: Job not found.", "error")
+
+    # Redirect back to the exact page the user was just on
+    return redirect(request.referrer or url_for('home'))
 
 
 if __name__ == "__main__":

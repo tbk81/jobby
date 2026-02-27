@@ -35,8 +35,7 @@ def scrape_jobs(url):
             clean_location = job_locations[job].text.replace("Location", "").strip().split(",")
             location = ",".join(clean_location[:2])
             url = job_url[job].get_attribute("href")
-            # if title:
-            #     add_job("Lilly", title, location, url)
+
             scraped_data.append({
                 "title": title,
                 "location": location,

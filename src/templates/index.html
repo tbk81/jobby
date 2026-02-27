@@ -61,10 +61,14 @@
                         <h3>{{ job.title }}</h3>
                         <p class="company">{{ job.company }}</p>
                         <p class="location">{{ job.location }}</p>
-                        <p class="date">{{ job.date_added }}</p>
+                        <p class="date">Added: {{ job.date_added }}</p>
                     </div>
                     <div class="job-action">
                         <a href="{{ job.url }}" target="_blank" class="apply-btn">View Job</a>
+
+                        <form action="{{ url_for('delete_job', job_id=job.id) }}" method="POST" style="display:inline;">
+                            <button type="submit" class="delete-btn">✕ Clear</button>
+                        </form>
                     </div>
                 </div>
             {% else %}

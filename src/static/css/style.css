@@ -94,7 +94,6 @@ button:active { transform: scale(0.98); }
 .job-info h3 { margin-bottom: 5px; color: #2c3e50; font-size: 18px; }
 .job-info .company { font-weight: bold; color: #555; font-size: 14px; margin-bottom: 3px; }
 .job-info .location { color: #7f8c8d; font-size: 13px; }
-.job-info .date { color: #7f8c8d; font-size: 13px; }
 
 /* Apply Button */
 .apply-btn {
@@ -149,4 +148,37 @@ button:active { transform: scale(0.98); }
 @keyframes fadeOut {
     from { opacity: 1; }
     to { opacity: 0; visibility: hidden; }
+}
+
+/* =========================================
+   JOB ACTION & DELETE BUTTON STYLES
+   ========================================= */
+
+/* Put the buttons side-by-side */
+.job-action {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+/* Style the new delete button */
+.delete-btn {
+    background-color: #e74c3c; /* Bright red */
+    color: white;
+    padding: 10px 15px;
+    margin-top: 0; /* Removes the default margin we set for other buttons */
+    border-radius: 6px;
+    font-size: 14px;
+}
+
+.delete-btn:hover {
+    background-color: #c0392b; /* Darker red on hover */
+}
+
+/* Style for the date added */
+.job-info .date {
+    color: #95a5a6; /* Light gray */
+    font-size: 12px;
+    margin-top: 6px;
+    font-style: italic;
 }
