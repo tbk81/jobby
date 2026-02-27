@@ -16,21 +16,17 @@ except NoSuchElementException:
     print("element not found")
 else:
     job_titles = site_driver.find_elements(By.CSS_SELECTOR, ".title")
-    job_locations = site_driver.find_elements(By.CSS_SELECTOR, ".location")
-    # job_url = site_driver.find_elements(By.ID, 'a[id="hiringthing-jobs"]')
+    job_locations = site_driver.find_elements(By.CSS_SELECTOR, ".locations-container")
+    # job_url = site_driver.find_elements(By.CSS_SELECTOR, ".title")
 
     for job in range(len(job_titles)):
-        print(job_titles[job].text.strip())
-        print(job_locations[job].text.replace("/", "").strip())
-        # print(job_titles[job].get_attribute("href"))
-        # if title:
-        #     add_job("Lilly", title, location, url)
-        # scraped_data.append({
-        #     "title": title,
-        #     "location": location,
-        #     "url": url
-        # })
+        title = job_titles[job].text.strip()
+        location = job_locations[job].text.replace("\n", "")
+        job_url = job_titles[job].get_attribute("href")
+        if "Diego" in location:
+            scraped_data.append({
+                "title": title,
+                "location": location,
+                "job_url": url
+            })
 site_driver.quit()
-
-
-
