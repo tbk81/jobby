@@ -171,7 +171,7 @@ def process_selection():
                     company=selected_company,
                     title=job['title'],
                     location=job['location'],
-                    url=job['url']
+                    url=job.get('url') or "No link available"
                 )
                 db.session.add(new_job)
                 new_jobs_count += 1
