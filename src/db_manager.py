@@ -48,11 +48,6 @@ def add_company(name, url):
         name (str): The name of the company.
         url (str): The website URL.
     """
-    # with Session(engine) as session:
-    #     new_company = Company(name=name, url=url)
-    #     session.add(new_company)
-    #     session.commit()
-    #     print(f"Success: Added '{name}'")
 
     with Session(company_engine) as session:
         # Checks if specific company exists
