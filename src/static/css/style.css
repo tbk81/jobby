@@ -150,3 +150,15 @@ button:active { transform: scale(0.98); }
     from { opacity: 1; }
     to { opacity: 0; visibility: hidden; }
 }
+
+/* Stale Job Warning */
+.stale-warning {
+    color: #d35400; /* Dark Orange */
+    background-color: #fdebd0; /* Light Orange Background */
+    padding: 8px 12px;
+    border-radius: 4px;
+    font-size: 13px;
+    font-weight: bold;
+    margin-top: 10px;
+    border-left: 3px solid #e67e22;
+}

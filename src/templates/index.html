@@ -61,7 +61,12 @@
                         <h3>{{ job.title }}</h3>
                         <p class="company">{{ job.company }}</p>
                         <p class="location">{{ job.location }}</p>
-                        <p class="date">{{ job.date_added }}</p>
+                        <p class="date">Added: {{ job.date_added }}</p>
+                        {% if job.date_updated < today %}
+                            <p class="stale-warning">
+                                This job was not found in the latest scrape (Last seen: {{ job.date_updated }})
+                            </p>
+                        {% endif %}
                     </div>
                     <div class="job-action">
                         <a href="{{ job.url }}" target="_blank" class="apply-btn">View Job</a>
