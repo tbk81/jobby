@@ -29,19 +29,22 @@ except NoSuchElementException:
 else:
     job_titles = site_driver.find_elements(By.CSS_SELECTOR, ".job-title")
     job_locations = site_driver.find_elements(By.CSS_SELECTOR, ".job-location")
+    multi_job_locations = site_driver.find_elements(By.CSS_SELECTOR,
+                                                    'button[data-ph-at-id="job-multi-locations-button"] span')
     job_url = site_driver.find_elements(By.CSS_SELECTOR, 'a[data-ph-at-id="job-link"]')
+    combine_loc = job_locations + multi_job_locations
 
-    for l in range(len(job_locations)):
-        print(job_locations[l].text)
-        print(l)
+    # for l in range(len(combine_loc)):
+    #     print(combine_loc[l].text)
+    #     print(l)
 
-    # for job in range(len(job_titles)):
+    for job in range(len(job_titles)):
         # title = job_titles[job].text.strip()
         # clean_location = job_locations[job].text.replace("Location", "").strip().split(",")
         # location = ",".join(clean_location[:2])
         # url = job_url[job].get_attribute("href")
         # print(job_titles[job].text.strip())
-        # clean_location = job_locations[job].text.replace("Location", "").strip().split(",")
+        clean_location = combine_loc[job].text.replace("Location", "").strip().split(",")
         # print(job_locations[job].text.replace("Location", "").strip().split(","))
         # print(job)
         # print(",".join(clean_location[:2]))
