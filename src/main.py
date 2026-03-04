@@ -165,7 +165,7 @@ def process_selection():
             ).scalar_one_or_none()
 
             if not existing_job:
-                # It's a brand new job
+                # It's a new job posting
                 new_job = Job(
                     company=selected_company,
                     title=job['title'],
