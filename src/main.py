@@ -1,6 +1,6 @@
 import os
 import importlib
-from flask import Flask, jsonify, render_template, request, redirect, flash, url_for
+from flask import Flask, render_template, request, redirect, flash, url_for
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import Mapped, mapped_column
 from sqlalchemy import Integer, String, Date, select
