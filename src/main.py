@@ -85,8 +85,7 @@ def home():
     if scraped_company:
         # Jobs for the company that was just scraped
         display_jobs = db.session.execute(
-            select(Job).where(Job.company == scraped_company)
-        ).scalars().all()
+            select(Job).where(Job.company == scraped_company)).scalars().all()
     else:
         # If no company is selected (first time loading the page), show an empty list
         # (or change this to select(Job) if you prefer to see all jobs by default)
