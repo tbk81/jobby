@@ -40,15 +40,16 @@ else:
 
     for job in range(len(job_titles)):
         # title = job_titles[job].text.strip()
-        # clean_location = job_locations[job].text.replace("Location", "").strip().split(",")
+        # clean_location = combine_loc[job].text.replace("Location", "").strip().split(",")
         # location = ",".join(clean_location[:2])
         # url = job_url[job].get_attribute("href")
-        # print(job_titles[job].text.strip())
+        # clean_location = job_locations[job].text.replace("Location", "").strip().split(",")
+        print(job_titles[job].text.strip())
         clean_location = combine_loc[job].text.replace("Location", "").strip().split(",")
         # print(job_locations[job].text.replace("Location", "").strip().split(","))
         # print(job)
-        # print(",".join(clean_location[:2]))
-        # print(job_url[job].get_attribute("href"))
+        print(",".join(clean_location[:2]))
+        print(job_url[job].get_attribute("href"))
 
         # scraped_data.append({
         #     "title": title,
