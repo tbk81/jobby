@@ -6,7 +6,7 @@ from selenium.webdriver.common.by import By
 
 
 def scrape_jobs(url):
-    print(url)
+    # print(url)
     site_driver = sel_driver(url)
     scraped_data = []
 
