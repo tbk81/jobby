@@ -4,8 +4,6 @@ from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.by import By
 
-url = "https://treeline.bio/careers"
-
 def scrape_jobs(url):
     site_driver = sel_driver(url)
     scraped_data = []
