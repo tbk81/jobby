@@ -176,20 +176,54 @@ def process_selection():
         # Run the scraper function and pass the URL
         jobs_found = parser.scrape_jobs(company.url)
 
-        # Save new jobs to the database
+        # Look in the job_parsers folder for the module
+        parser = importlib.import_module(f"job_parsers.{module_name}")
+
+        # Run the scraper function and pass the URL
+        jobs_found = parser.scrape_jobs(company.url)
+
+        # Create a list of all the job titles just scraped
+        scraped_titles = [job.get('title') for job in jobs_found if job.get('title')]
+
+        # Get all existing jobs for this company from the active database
+        existing_jobs = db.session.execute(
+            select(Job).where(Job.company == selected_company)
+        ).scalars().all()
+
+        # Find stale jobs and move them to stats.db
+        moved_jobs_count = 0
+        for old_job in existing_jobs:
+            if old_job.title not in scraped_titles:
+                # If removed from the website move it to the stats database.
+                historical_job = StatsJob(
+                    company=old_job.company,
+                    title=old_job.title,
+                    location=old_job.location,
+                    url=old_job.url,
+                    date_added=old_job.date_added
+                )
+                db.session.add(historical_job)  # Add to stats.db
+                db.session.delete(old_job)  # Remove from active jobs.db
+                moved_jobs_count += 1
+
+        # Process the newly scraped jobs
         new_jobs_count = 0
         for job in jobs_found:
+            job_title = job.get('title')
+            if not job_title:
+                continue  # Skip if there's no title
+
             existing_job = db.session.execute(
-                select(Job).where(Job.company == selected_company, Job.title == job['title'])
+                select(Job).where(Job.company == selected_company, Job.title == job_title)
             ).scalar_one_or_none()
 
             if not existing_job:
                 # It's a new job posting
                 new_job = Job(
                     company=selected_company,
-                    title=job['title'],
-                    location=job['location'],
-                    url=job.get('url') or "No link available"
+                    title=job_title,
+                    location=job.get('location', 'Remote/Unspecified'),
+                    url=job.get('url') or "No link available"  # Kept your fallback!
                 )
                 db.session.add(new_job)
                 new_jobs_count += 1
@@ -199,8 +233,10 @@ def process_selection():
 
         db.session.commit()
 
-        # Flash success message
-        flash(f"Success! Scraped {len(jobs_found)} jobs. Added {new_jobs_count} new ones to the board.", "success")
+        # Flash success message updated to include moved jobs
+        flash(
+            f"Success! Scraped {len(jobs_found)} jobs. Added {new_jobs_count} new. Moved {moved_jobs_count} closed jobs to stats.",
+            "success")
 
     except ModuleNotFoundError:
         flash(f"Error: Could not find a script named '{module_name}.py' in the job_parsers folder.", "error")
