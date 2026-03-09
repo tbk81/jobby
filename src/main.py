@@ -16,6 +16,7 @@ DB_FOLDER = os.path.join(BASE_DIR, "databases")
 # Paths for your two separate files
 companies_db_path = os.path.join(DB_FOLDER, "companies.db")
 jobs_db_path = os.path.join(DB_FOLDER, "jobs.db")
+stats_db_path = os.path.join(DB_FOLDER, "stats.db")
 
 # CONFIGURE FLASK
 app = Flask(__name__)
@@ -29,8 +30,9 @@ app.config["SQLALCHEMY_DATABASE_URI"] = f"sqlite:///{companies_db_path}"
 # The other databases (Jobs). This can allow for multiple database files
 # Give name/key: 'job_db'
 app.config["SQLALCHEMY_BINDS"] = {
-    "job_db": f"sqlite:///{jobs_db_path}"
-}
+    "job_db": f"sqlite:///{jobs_db_path}",
+    "stats_db": f"sqlite:///{stats_db_path}"
+    }
 
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 db = SQLAlchemy(app)
@@ -61,6 +63,23 @@ class Job(db.Model):
     date_added: Mapped[date] = mapped_column(Date, default=func.current_date())
     date_updated: Mapped[date] = mapped_column(Date, default=func.current_date())
 
+
+class StatsJob(db.Model):
+    # Tells Flask to save this exclusively in stats.db
+    __bind_key__ = "stats_db"
+    __tablename__ = "historical_jobs"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    company: Mapped[str] = mapped_column(String(250), nullable=False)
+    title: Mapped[str] = mapped_column(String(250), nullable=False)
+    location: Mapped[str] = mapped_column(String(250), nullable=False)
+    url: Mapped[str] = mapped_column(String(250), nullable=False)
+
+    # Copies the original date it was found
+    date_added: Mapped[date] = mapped_column(Date)
+
+    # Stamps the date it was moved to this database (job closed)
+    date_removed: Mapped[date] = mapped_column(Date, default=func.current_date())
 
 # CREATE TABLES
 # This will create 'companies' in companies.db and 'jobs' in jobs.db automatically
