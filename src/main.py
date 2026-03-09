@@ -32,7 +32,7 @@ app.config["SQLALCHEMY_DATABASE_URI"] = f"sqlite:///{companies_db_path}"
 app.config["SQLALCHEMY_BINDS"] = {
     "job_db": f"sqlite:///{jobs_db_path}",
     "stats_db": f"sqlite:///{stats_db_path}"
-    }
+}
 
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 db = SQLAlchemy(app)
@@ -41,7 +41,7 @@ db = SQLAlchemy(app)
 # DEFINE MODELS
 
 class Company(db.Model):
-    # No bind key needed, uses the default SQLALCHEMY_DATABASE_URI
+    # Use the default SQLALCHEMY_DATABASE_URI
     __tablename__ = "companies"
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
@@ -51,7 +51,7 @@ class Company(db.Model):
 
 
 class Job(db.Model):
-    # Tells Flask to use the 'job_db' file defined in BINDS
+    # Tells Flask to use the 'job_db' file defined in binds
     __bind_key__ = "job_db"
     __tablename__ = "jobs"
 
@@ -65,7 +65,7 @@ class Job(db.Model):
 
 
 class StatsJob(db.Model):
-    # Tells Flask to save this exclusively in stats.db
+    # Tells Flask to save in stats.db
     __bind_key__ = "stats_db"
     __tablename__ = "historical_jobs"
 
@@ -81,6 +81,7 @@ class StatsJob(db.Model):
     # Stamps the date it was moved to this database (job closed)
     date_removed: Mapped[date] = mapped_column(Date, default=func.current_date())
 
+
 # CREATE TABLES
 # This will create 'companies' in companies.db and 'jobs' in jobs.db automatically
 with app.app_context():
@@ -89,7 +90,6 @@ with app.app_context():
 
 
 # ROUTES
-
 @app.route('/')
 def home():
     # READ ALL RECORDS
@@ -147,6 +147,7 @@ def add_company():
         flash(f"Success! {name} has been added.", "success")
 
     return redirect('/')
+
 
 @app.route('/process_selection', methods=['POST'])
 def process_selection():
