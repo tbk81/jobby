@@ -200,3 +200,35 @@ button:active { transform: scale(0.98); }
     margin-top: 10px;
     border-left: 3px solid #e67e22;
 }
+
+/* =========================================
+   STATS CARD & BUTTON
+   ========================================= */
+
+/* Tertiary Card (Stats) */
+.stats-card {
+    border-top: 5px solid #16a085; /* Vibrant Teal top border */
+    padding: 25px 40px; /* Slightly slimmer padding than the main cards */
+}
+
+.stats-card h2 {
+    color: #16a085;
+    margin-bottom: 10px;
+}
+
+/* Specific button for the stats page */
+.stats-btn {
+    background-color: #16a085;
+    color: white;
+    text-decoration: none;
+    padding: 12px 25px;
+    border-radius: 6px;
+    font-weight: bold;
+    font-size: 15px;
+    transition: background-color 0.2s ease;
+    white-space: nowrap;
+}
+
+.stats-btn:hover {
+    background-color: #117a65; /* Darker teal on hover */
+}

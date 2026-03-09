@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Job Stats & History</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body class="combined-layout">
+
+    <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Dashboard Logo" class="site-logo">
+
+    <div class="dashboard-card primary-card">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <h2>Historical Job Data</h2>
+            <a href="/" class="apply-btn" style="background-color: #3498db;">← Back to Dashboard</a>
+        </div>
+        <p style="font-size: 16px; color: #555; margin-top: 10px;">
+            <strong>Total Closed Jobs Tracked:</strong> {{ total_closed }}
+        </p>
+    </div>
+
+    <div class="jobs-container">
+        <h2>Archived Jobs</h2>
+
+        <div class="job-list">
+            {% for job in closed_jobs %}
+                <div class="job-card" style="border-left-color: #95a5a6; opacity: 0.85;">
+                    <div class="job-info" style="margin-right: 0;">
+                        <h3>{{ job.title }}</h3>
+                        <p class="company">{{ job.company }}</p>
+                        <p class="location">{{ job.location }}</p>
+
+                        <div style="display: flex; gap: 20px; margin-top: 8px;">
+                            <p class="date">📅 Found: {{ job.date_added }}</p>
+                            <p class="date" style="color: #e74c3c;">Closed: {{ job.date_removed }}</p>
+                        </div>
+                    </div>
+                    </div>
+            {% else %}
+                <div class="job-card">
+                    <p class="empty-state">No closed jobs in the database yet. Run some scrapes over time to build history!</p>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+</body>
+</html>

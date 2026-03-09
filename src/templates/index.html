@@ -45,14 +45,24 @@
         </form>
     </div>
 
+    <div class="dashboard-card stats-card">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+            <h2 style="margin-bottom: 0;">Historical Job Data</h2>
+            <a href="/stats" class="stats-btn">View Stats Dashboard →</a>
+        </div>
+
+        <p style="color: #555;">View archived jobs and track how long positions stayed open before closing.</p>
+    </div>
+
     <div class="jobs-container">
-        <h2>
-            {% if scraped_company %}
-                Jobs Scraped from {{ scraped_company }}
-            {% else %}
-                Job Board (Select a company above)
-            {% endif %}
-        </h2>
+
+            <h2>
+                {% if scraped_company %}
+                    Jobs Scraped from {{ scraped_company }}
+                {% else %}
+                    Job Board (Select a company above)
+                {% endif %}
+            </h2>
 
         <div class="job-list">
             {% for job in all_jobs %}

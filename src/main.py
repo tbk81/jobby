@@ -248,5 +248,18 @@ def process_selection():
     return redirect(url_for('home', company=selected_company))
 
 
+@app.route('/stats')
+def stats():
+    # 1. Fetch all closed jobs, sorting by the date they were removed (newest first)
+    closed_jobs = db.session.execute(
+        select(StatsJob).order_by(StatsJob.date_removed.desc())
+    ).scalars().all()
+
+    # 2. Count the total for a quick metrics display
+    total_closed = len(closed_jobs)
+
+    return render_template('stats.html', closed_jobs=closed_jobs, total_closed=total_closed)
+
+
 if __name__ == "__main__":
     app.run(debug=True, port=5001)
