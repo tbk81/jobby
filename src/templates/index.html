@@ -7,6 +7,12 @@
 </head>
 <body class="combined-layout">
 
+    <div id="loading-overlay" class="loading-overlay">
+        <div class="spinner"></div>
+        <h2 id="loading-text">Spinning up the scrapers... Please wait.</h2>
+        <p>This may take a minute or two depending on the number of companies.</p>
+    </div>
+
     {% with messages = get_flashed_messages(with_categories=true) %}
       {% if messages %}
         <div class="flash-container">
@@ -22,13 +28,16 @@
     <div class="dashboard-card primary-card">
         <h2>Job Scraper</h2>
 
-        <form action="/process_selection" method="POST">
+        <form action="/process_selection" method="POST" id="scrape-form" onsubmit="showLoadingScreen()">
             <label for="company">Company:</label>
             <select name="company_name" id="company" required>
-                <option value="" disabled selected>-- Select a Company --</option>
-                {% for company in all_companies %}
-                    <option value="{{ company.name }}">{{ company.name }}</option>
-                {% endfor %}
+                    <option value="" disabled selected>-- Select a Company --</option>
+
+                    <option value="ALL" style="font-weight: bold; color: #2980b9;">Scrape ALL Companies</option>
+
+                    {% for company in all_companies %}
+                        <option value="{{ company.name }}">{{ company.name }}</option>
+                    {% endfor %}
             </select>
             <button type="submit">Start Scrape</button>
         </form>
@@ -96,6 +105,23 @@
         {% endif %}
 
     </div>
+
+    <script>
+        function showLoadingScreen() {
+            // 1. Add the 'active' class to force it to show
+            document.getElementById('loading-overlay').classList.add('active');
+
+            // 2. Change the text based on what they selected
+            var selectBox = document.getElementById('company');
+            var selectedText = selectBox.options[selectBox.selectedIndex].text;
+            document.getElementById('loading-text').innerText = "Scraping " + selectedText + "... Please wait.";
+
+            // 3. Update the button
+            var btn = document.querySelector('#scrape-form button[type="submit"]');
+            btn.innerText = "Scraping...";
+            btn.style.backgroundColor = "#95a5a6";
+        }
+    </script>
 
 </body>
 </html>

@@ -157,97 +157,108 @@ def process_selection():
         flash("Error: Please select a company first.", "error")
         return redirect('/')
 
-    # Get the company URL from the database
-    company = db.session.execute(
-        select(Company).where(Company.name == selected_company)
-    ).scalar_one_or_none()
+    # 1. Determine which companies to scrape
+    if selected_company == "ALL":
+        companies_to_scrape = db.session.execute(select(Company)).scalars().all()
+    else:
+        # Just grab the single selected company
+        single_comp = db.session.execute(
+            select(Company).where(Company.name == selected_company)
+        ).scalar_one_or_none()
 
-    if not company:
-        flash("Error: Company not found in database.", "error")
-        return redirect('/')
+        if not single_comp:
+            flash("Error: Company not found in database.", "error")
+            return redirect('/')
+        companies_to_scrape = [single_comp]
 
-    # Dynamically load the correct parser script
-    # e.g., "Eli Lilly" becomes "eli_lilly"
-    module_name = selected_company.lower().replace(" ", "_")
+    # Tracking variables for the flash message
+    total_new_jobs = 0
+    total_moved_jobs = 0
+    total_scraped = 0
+    errors = []
 
-    try:
-        # Look in the job_parsers folder for the module
-        parser = importlib.import_module(f"job_parsers.{module_name}")
+    from datetime import date
 
-        # Run the scraper function and pass the URL
-        jobs_found = parser.scrape_jobs(company.url)
+    # 2. Loop through the list of companies
+    for comp in companies_to_scrape:
+        module_name = comp.name.lower().replace(" ", "_")
 
-        # Look in the job_parsers folder for the module
-        parser = importlib.import_module(f"job_parsers.{module_name}")
+        try:
+            # Dynamically load the correct parser script
+            parser = importlib.import_module(f"job_parsers.{module_name}")
+            jobs_found = parser.scrape_jobs(comp.url)
+            total_scraped += len(jobs_found)
 
-        # Run the scraper function and pass the URL
-        jobs_found = parser.scrape_jobs(company.url)
+            # --- COMPARISON LOGIC ---
+            scraped_titles = [job.get('title') for job in jobs_found if job.get('title')]
 
-        # Create a list of all the job titles just scraped
-        scraped_titles = [job.get('title') for job in jobs_found if job.get('title')]
+            existing_jobs = db.session.execute(
+                select(Job).where(Job.company == comp.name)
+            ).scalars().all()
 
-        # Get all existing jobs for this company from the active database
-        existing_jobs = db.session.execute(
-            select(Job).where(Job.company == selected_company)
-        ).scalars().all()
+            # Find stale jobs and move them
+            for old_job in existing_jobs:
+                if old_job.title not in scraped_titles:
+                    historical_job = StatsJob(
+                        company=old_job.company,
+                        title=old_job.title,
+                        location=old_job.location,
+                        url=old_job.url,
+                        date_added=old_job.date_added
+                    )
+                    db.session.add(historical_job)
+                    db.session.delete(old_job)
+                    total_moved_jobs += 1
 
-        # Find stale jobs and move them to stats.db
-        moved_jobs_count = 0
-        for old_job in existing_jobs:
-            if old_job.title not in scraped_titles:
-                # If removed from the website move it to the stats database.
-                historical_job = StatsJob(
-                    company=old_job.company,
-                    title=old_job.title,
-                    location=old_job.location,
-                    url=old_job.url,
-                    date_added=old_job.date_added
-                )
-                db.session.add(historical_job)  # Add to stats.db
-                db.session.delete(old_job)  # Remove from active jobs.db
-                moved_jobs_count += 1
+            # Process newly scraped jobs
+            for job in jobs_found:
+                job_title = job.get('title')
+                if not job_title:
+                    continue
 
-        # Process the newly scraped jobs
-        new_jobs_count = 0
-        for job in jobs_found:
-            job_title = job.get('title')
-            if not job_title:
-                continue  # Skip if there's no title
+                existing_job = db.session.execute(
+                    select(Job).where(Job.company == comp.name, Job.title == job_title)
+                ).scalar_one_or_none()
 
-            existing_job = db.session.execute(
-                select(Job).where(Job.company == selected_company, Job.title == job_title)
-            ).scalar_one_or_none()
+                if not existing_job:
+                    new_job = Job(
+                        company=comp.name,
+                        title=job_title,
+                        location=job.get('location', 'Remote/Unspecified'),
+                        url=job.get('url') or "No link available"
+                    )
+                    db.session.add(new_job)
+                    total_new_jobs += 1
+                else:
+                    existing_job.date_updated = date.today()
 
-            if not existing_job:
-                # It's a new job posting
-                new_job = Job(
-                    company=selected_company,
-                    title=job_title,
-                    location=job.get('location', 'Remote/Unspecified'),
-                    url=job.get('url') or "No link available"  # Kept your fallback!
-                )
-                db.session.add(new_job)
-                new_jobs_count += 1
-            else:
-                # It already exists and update the 'last seen' date to today.
-                existing_job.date_updated = date.today()
+            # Commit the database changes for THIS company before moving to the next
+            db.session.commit()
 
-        db.session.commit()
+        except ModuleNotFoundError:
+            errors.append(f"Skipped {comp.name}: Missing '{module_name}.py' script.")
+        except Exception as e:
+            db.session.rollback()  # Undo any pending DB changes for this specific company if it crashes
+            errors.append(f"Error scraping {comp.name}: {str(e)}")
 
-        # Flash success message updated to include moved jobs
+    # 3. Handle Flash Messages and Redirection
+    if errors:
+        # If any company failed, flash the specific errors
+        for err in errors:
+            flash(err, "error")
+
+    if selected_company == "ALL":
         flash(
-            f"Success! Scraped {len(jobs_found)} jobs. Added {new_jobs_count} new. Moved {moved_jobs_count} closed jobs to stats.",
+            f"Bulk scrape complete! Scraped {total_scraped} total jobs. Added {total_new_jobs} new. Moved {total_moved_jobs} to stats.",
             "success")
-
-    except ModuleNotFoundError:
-        flash(f"Error: Could not find a script named '{module_name}.py' in the job_parsers folder.", "error")
-    except Exception as e:
-        flash(f"An error occurred while scraping: {str(e)}", "error")
-        print(f"{str(e)}", "error")
-
-    # Redirect to the home page to see the updated jobs
-    return redirect(url_for('home', company=selected_company))
-
+        # Redirect to the main home page (shows an empty job board so they can choose what to look at)
+        return redirect(url_for('home'))
+    else:
+        flash(
+            f"Success! Scraped {total_scraped} jobs for {selected_company}. Added {total_new_jobs} new. Moved {total_moved_jobs} to stats.",
+            "success")
+        # Redirect back to the filtered view for that specific company
+        return redirect(url_for('home', company=selected_company))
 
 @app.route('/stats')
 def stats():
